@@ -3,7 +3,7 @@ import { FormPage } from './page/form.page';
 
 
 
-test('Adicione uma pessoa ao formulario', async ({ page }) => {
+test('Registrar um estudante com sucesso', async ({ page }) => {
   const formPage = new FormPage(page);
   await formPage.navigate();
   await page.pause()
