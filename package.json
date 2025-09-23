@@ -1,0 +1,22 @@
+{
+  "name": "playwrighttemplatetypescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RodrigoOBC/PlaywrightTemplateTypeScript.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RodrigoOBC/PlaywrightTemplateTypeScript/issues"
+  },
+  "homepage": "https://github.com/RodrigoOBC/PlaywrightTemplateTypeScript#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^24.5.2"
+  }
+}
