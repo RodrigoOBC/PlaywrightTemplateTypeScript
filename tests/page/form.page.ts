@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import TextBoxComponent from '../components/textBox.components';
+import { ButtonComponent } from '../components/button.components';
 
 
 export class FormPage {
@@ -16,7 +17,7 @@ export class FormPage {
     readonly currentAddress: Locator
     readonly stateDropdown: Locator
     readonly cityDropdown: Locator
-    readonly submitButton: Locator
+    readonly submitButton: ButtonComponent
 
 
     constructor(page: Page) {
@@ -33,7 +34,7 @@ export class FormPage {
         this.currentAddress = this.page.locator('#currentAddress');
         this.stateDropdown = this.page.locator('#state');
         this.cityDropdown = this.page.locator('#city');
-        this.submitButton = this.page.locator('#submit');
+        this.submitButton = new ButtonComponent(this.page, 'Submit');
     }
 
     async navigate() {
@@ -80,11 +81,7 @@ export class FormPage {
         const cityOption = this.page.locator(`#stateCity-wrapper div[role="option"]`, { hasText: cityName });
         await cityOption.click();
     }
-
-    async submitForm() {
-        await this.submitButton.click();
-    }
-
+    
     async verifySubmission(expectedData: { [key: string]: string }) {
         for (const [label, value] of Object.entries(expectedData)) {
             const row = this.page.locator('table').getByRole('row', { hasText: label });

@@ -13,7 +13,7 @@ test('Registrar um estudante com sucesso', async ({ page }) => {
   await formPage.selectGender('Male')
   await formPage.mobileNumber.fillTextBox('1234567890');
   // ... continue preenchendo o formulário conforme necessário
-  await formPage.submitForm();
+  await formPage.submitButton.click();
 
   // Verifique se o formulário foi enviado com sucesso
   await expect(page.locator('#example-modal-sizes-title-lg')).toHaveText('Thanks for submitting the form');
