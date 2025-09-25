@@ -6,12 +6,15 @@ import { FormPage } from './page/form.page';
 test('Registrar um estudante com sucesso', async ({ page }) => {
   const formPage = new FormPage(page);
   await formPage.navigate();
-  await page.pause()
+
   await formPage.firstName.fillTextBox('Rodrigo');
   await formPage.lastName.fillTextBox('Cabral');
   await formPage.email.fillTextBox('teste@teste.com');
   await formPage.gender('Male').click();
   await formPage.mobileNumber.fillTextBox('1234567890');
+  await formPage.subjectsInput.fillAndPressEnter('Computer Science');
+  await formPage.stateDropdown.clickAndSelectOption('NCR');
+  await formPage.cityDropdown.clickAndSelectOption('Delhi');
   // ... continue preenchendo o formulário conforme necessário
   await formPage.submitButton.click();
 
