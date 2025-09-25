@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import TextBoxComponent from '../components/textBox.components';
-import { ButtonComponent } from '../components/button.components';
+import { ButtonComponent, radioButtonComponent } from '../components/button.components';
 
 
 export class FormPage {
@@ -8,7 +8,7 @@ export class FormPage {
     readonly firstName: TextBoxComponent
     readonly lastName: TextBoxComponent
     readonly email: TextBoxComponent
-    readonly gender: (name: string) => Locator
+    readonly gender: (name: string) => radioButtonComponent
     readonly mobileNumber: TextBoxComponent
     readonly dateOfBirthInput: TextBoxComponent
     readonly subjectsInput: Locator
@@ -25,7 +25,7 @@ export class FormPage {
         this.firstName = new TextBoxComponent(this.page, {locatorObject :this.page.locator('#firstName')});
         this.lastName = new TextBoxComponent(this.page, {locatorObject :this.page.locator('#lastName')});
         this.email = new TextBoxComponent(this.page, {locatorObject :this.page.locator('#userEmail')});
-        this.gender = (name: string) => this.page.getByText(name, { exact: true });
+        this.gender = (name: string) => new radioButtonComponent(this.page, name);
         this.mobileNumber = new TextBoxComponent(this.page, {locatorObject :this.page.locator('#userNumber')});
         this.dateOfBirthInput = new TextBoxComponent(this.page, {locatorObject :this.page.locator('#dateOfBirthInput')});
         this.subjectsInput = this.page.locator('#subjectsInput');
@@ -39,12 +39,6 @@ export class FormPage {
 
     async navigate() {
         await this.page.goto('/automation-practice-form');
-    }
-
-    async selectGender(genderName: string) {
-        const genderOption = await this.gender(genderName);
-        await genderOption.click();
-        await expect(genderOption).toBeChecked();
     }
 
     async fillSubjects(subjects: string[]) {
