@@ -2,15 +2,17 @@ import { type Locator, type Page } from '@playwright/test';
 
 export class comboboxComponent {
     readonly page: Page
-    readonly locator: Locator
+    readonly locators: { pathForlocator?: string, locatorObject?: Locator }
+    readonly locatorObject: Locator
 
-    constructor(page: Page, private selector: string) {
+    constructor(page: Page, locators: { pathForlocator?: string, locatorObject?: Locator }) {
         this.page = page;
-        this.locator = this.page.getByRole('combobox', { name: this.selector });
+        this.locators = { pathForlocator: locators.pathForlocator, locatorObject: locators.locatorObject };
+        this.locatorObject = this.locators.pathForlocator ? this.page.locator(this.locators.pathForlocator) : this.locators.locatorObject ?? (() => { throw new Error('Either pathForlocator or locatorObject must be provided.'); })();
     }
 
     async get() {
-        return this.locator
+        return this.locatorObject
     }
 
     async click() {
@@ -28,20 +30,28 @@ export class comboboxComponent {
         await combobox.selectOption({ label: option });
     }
 
+    async clickAndSelectOption(option: string) {
+        const combobox = await this.get();
+        await combobox.click();
+        await combobox.getByText(option,{ exact: true }).click();
+    }
+
 }
 
 export class autoCompleteComponent extends comboboxComponent {
-    readonly page: Page
-    readonly locator: Locator
+readonly page: Page
+    readonly locators: { pathForlocator?: string, locatorObject?: Locator }
+    readonly locatorObject: Locator
 
-    constructor(page: Page, selector: string) {
-        super(page, selector);
+    constructor(page: Page, locators: { pathForlocator?: string, locatorObject?: Locator }) {
+        super(page, locators);
         this.page = page;
-        this.locator = this.page.getByRole('combobox', { name: selector });
+        this.locators = { pathForlocator: locators.pathForlocator, locatorObject: locators.locatorObject };
+        this.locatorObject = this.locators.pathForlocator ? this.page.locator(this.locators.pathForlocator) : this.locators.locatorObject ?? (() => { throw new Error('Either pathForlocator or locatorObject must be provided.'); })();
     }
 
     async get() {
-        return this.locator
+        return this.locatorObject
     }
 
     async fillAndPressEnter(option: string) {
@@ -54,6 +64,13 @@ export class autoCompleteComponent extends comboboxComponent {
         const combobox = await this.get();
         await combobox.fill(option);
         await combobox.selectOption({ label: option });
+    }
+
+    async clickAndSelectOption(option: string) {
+        const combobox = await this.get();
+        await combobox.click();
+        await combobox.fill(option);
+        await combobox.getByText(option,{ exact: true }).click();
     }
 
 }
