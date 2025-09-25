@@ -1,6 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import TextBoxComponent from '../components/textBox.components';
 import { ButtonComponent, radioButtonComponent } from '../components/button.components';
+import { comboboxComponent ,autoCompleteComponent} from '../components/combobox.components';
 
 
 export class FormPage {
@@ -11,12 +12,12 @@ export class FormPage {
     readonly gender: (name: string) => radioButtonComponent
     readonly mobileNumber: TextBoxComponent
     readonly dateOfBirthInput: TextBoxComponent
-    readonly subjectsInput: Locator
+    readonly subjectsInput: autoCompleteComponent
     readonly hobbies: (name: string) => Locator
     readonly uploadPicture: Locator
-    readonly currentAddress: Locator
-    readonly stateDropdown: Locator
-    readonly cityDropdown: Locator
+    readonly currentAddress: TextBoxComponent
+    readonly stateDropdown: comboboxComponent
+    readonly cityDropdown: comboboxComponent
     readonly submitButton: ButtonComponent
 
 
@@ -28,12 +29,12 @@ export class FormPage {
         this.gender = (name: string) => new radioButtonComponent(this.page, name);
         this.mobileNumber = new TextBoxComponent(this.page, {locatorObject :this.page.locator('#userNumber')});
         this.dateOfBirthInput = new TextBoxComponent(this.page, {locatorObject :this.page.locator('#dateOfBirthInput')});
-        this.subjectsInput = this.page.locator('#subjectsInput');
+        this.subjectsInput = new autoCompleteComponent(this.page, {locatorObject :this.page.locator('#subjectsInput')});
         this.hobbies = (name: string) => this.page.getByRole('checkbox', { name: name });
         this.uploadPicture = this.page.locator('#uploadPicture');
-        this.currentAddress = this.page.locator('#currentAddress');
-        this.stateDropdown = this.page.locator('#state');
-        this.cityDropdown = this.page.locator('#city');
+        this.currentAddress = new TextBoxComponent(this.page, {locatorObject :this.page.locator('#currentAddress')});
+        this.stateDropdown = new comboboxComponent(this.page, {locatorObject :this.page.locator('#state')});
+        this.cityDropdown = new comboboxComponent(this.page, {locatorObject :this.page.locator('#city')});
         this.submitButton = new ButtonComponent(this.page, 'Submit');
     }
 
@@ -41,13 +42,7 @@ export class FormPage {
         await this.page.goto('/automation-practice-form');
     }
 
-    async fillSubjects(subjects: string[]) {
-        for (const subject of subjects) {
-            await this.subjectsInput.fill(subject);
-            await this.subjectsInput.press('Enter');
-        }
-    }
-
+    
     async selectHobbies(hobbiesNames: string[]) {
         for (const hobby of hobbiesNames) {
             const hobbyOption = this.hobbies(hobby);
@@ -58,22 +53,6 @@ export class FormPage {
 
     async uploadPictureFile(filePath: string) {
         await this.uploadPicture.setInputFiles(filePath);
-    }
-
-    async fillCurrentAddress(address: string) {
-        await this.currentAddress.fill(address);
-    }
-
-    async selectState(stateName: string) {
-        await this.stateDropdown.click();
-        const stateOption = this.page.locator(`#stateCity-wrapper div[role="option"]`, { hasText: stateName });
-        await stateOption.click();
-    }
-
-    async selectCity(cityName: string) {
-        await this.cityDropdown.click();
-        const cityOption = this.page.locator(`#stateCity-wrapper div[role="option"]`, { hasText: cityName });
-        await cityOption.click();
     }
     
     async verifySubmission(expectedData: { [key: string]: string }) {
