@@ -26,3 +26,19 @@ export class ButtonComponent {
 
 
 }
+
+export class radioButtonComponent extends ButtonComponent {
+    readonly page: Page
+    readonly locator: Locator
+
+    constructor(page: Page, private name: string) {
+        super(page, name);
+        this.page = page;
+        this.locator = this.page.getByText(name, {exact: true});
+    }
+
+    async get() {
+        return this.locator
+    }
+
+}
