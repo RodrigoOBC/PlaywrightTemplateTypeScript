@@ -10,7 +10,7 @@ test('Registrar um estudante com sucesso', async ({ page }) => {
   await formPage.firstName.fillTextBox('Rodrigo');
   await formPage.lastName.fillTextBox('Cabral');
   await formPage.email.fillTextBox('teste@teste.com');
-  await formPage.selectGender('Male')
+  await formPage.gender('Male').click();
   await formPage.mobileNumber.fillTextBox('1234567890');
   // ... continue preenchendo o formulário conforme necessário
   await formPage.submitButton.click();
