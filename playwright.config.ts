@@ -26,7 +26,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
 
-    baseURL: 'https://demoqa.com',
+    baseURL: 'https://opensource-demo.orangehrmlive.com/',
 
     trace: 'on-first-retry',
   },
