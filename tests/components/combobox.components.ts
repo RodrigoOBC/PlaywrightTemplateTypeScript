@@ -11,26 +11,26 @@ export class comboboxComponent {
         this.locatorObject = this.locators.pathForlocator ? this.page.locator(this.locators.pathForlocator) : this.locators.locatorObject ?? (() => { throw new Error('Either pathForlocator or locatorObject must be provided.'); })();
     }
 
-    async get() {
+    async get():Promise<Locator> {
         return this.locatorObject
     }
 
-    async click() {
+    async click(): Promise<void>  {
         const combobox = await this.get();
         await combobox.click();
     }
 
-    async isVisible() {
+    async isVisible(): Promise<boolean>  {
         const combobox = await this.get();
         return combobox.isVisible();
     }
 
-    async selectOption(option: string) {
+    async selectOption(option: string): Promise<void>  {
         const combobox = await this.get();
         await combobox.selectOption({ label: option });
     }
 
-    async clickAndSelectOption(option: string) {
+    async clickAndSelectOption(option: string): Promise<void>  {
         const combobox = await this.get();
         await combobox.click();
         await combobox.getByText(option,{ exact: true }).click();
@@ -50,23 +50,23 @@ readonly page: Page
         this.locatorObject = this.locators.pathForlocator ? this.page.locator(this.locators.pathForlocator) : this.locators.locatorObject ?? (() => { throw new Error('Either pathForlocator or locatorObject must be provided.'); })();
     }
 
-    async get() {
+    async get():Promise<Locator>  {
         return this.locatorObject
     }
 
-    async fillAndPressEnter(option: string) {
+    async fillAndPressEnter(option: string): Promise<void>  {
         const combobox = await this.get();
         await combobox.fill(option);
         await combobox.press('Enter');
     }
 
-    async fillAndSelectOption(option: string) {
+    async fillAndSelectOption(option: string): Promise<void>  {
         const combobox = await this.get();
         await combobox.fill(option);
         await combobox.selectOption({ label: option });
     }
 
-    async clickAndSelectOption(option: string) {
+    async clickAndSelectOption(option: string): Promise<void>  {
         const combobox = await this.get();
         await combobox.click();
         await combobox.fill(option);

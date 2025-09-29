@@ -10,20 +10,38 @@ export class ButtonComponent {
         this.locator = this.page.getByRole('button', { name: this.selector });
     }
 
-    async get() {
+    async get():Promise<Locator> {
         return this.locator
     }
 
-    async click() {
+    async click(): Promise<void>  {
         const button = await this.get();
         await button.click();
     }
 
-    async isVisible() {
+    async isVisible(): Promise<boolean>  {
         const button = await this.get();
         return button.isVisible();
     }
 
+
+}
+
+export class LinkButtonComponent extends ButtonComponent {
+    readonly page: Page
+    readonly locator: Locator
+    readonly locators: { pathForlocator?: string, locatorObject?: Locator }
+
+    constructor(page: Page, locators: { pathForlocator?: string, locatorObject?: Locator }) {
+        super(page, '');
+        this.page = page;
+        this.locators = { pathForlocator: locators.pathForlocator, locatorObject: locators.locatorObject };
+        this.locator = this.locators.pathForlocator ? this.page.getByRole('link',{name: this.locators.pathForlocator}) : this.locators.locatorObject ?? (() => { throw new Error('Either pathForlocator or locatorObject must be provided.'); })();
+    }
+
+    async get():Promise<Locator>  {
+        return this.locator
+    }
 
 }
 
@@ -37,7 +55,7 @@ export class radioButtonComponent extends ButtonComponent {
         this.locator = this.page.getByText(name, {exact: true});
     }
 
-    async get() {
+    async get():Promise<Locator>  {
         return this.locator
     }
 
