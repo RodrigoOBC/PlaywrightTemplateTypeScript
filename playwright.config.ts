@@ -25,7 +25,6 @@ export default defineConfig({
   reporter: [['html'],['line']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-
     baseURL: 'https://opensource-demo.orangehrmlive.com/',
 
     trace: 'on-first-retry',
@@ -36,6 +35,11 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      dependencies: ['setup Login'],
+    },
+    {
+      name: 'setup Login',
+      testMatch: /global\.setup\.ts/,
     },
 
     // {

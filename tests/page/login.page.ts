@@ -29,4 +29,8 @@ export class LoginPage {
         await this.loginButton.click();
     }
 
+    async validateLogin() {
+        await expect(this.page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+    }
+
 }
