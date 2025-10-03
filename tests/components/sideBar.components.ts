@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
 import { LinkButtonComponent } from '../components/button.components';
 
 export class SideBarComponent {
