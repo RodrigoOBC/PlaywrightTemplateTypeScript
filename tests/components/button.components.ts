@@ -60,3 +60,30 @@ export class radioButtonComponent extends ButtonComponent {
     }
 
 }
+
+
+export class ButtonIconComponent extends ButtonComponent {
+    readonly page: Page
+    readonly iconName: string
+    readonly icon: { [key: string]: Locator }
+
+    constructor(page: Page, iconName: string) {
+        super(page, iconName);
+        this.page = page;
+        this.iconName = iconName;
+        this.icon = {
+            delete: this.page.locator('[class="oxd-icon-button oxd-table-cell-action-space"] [class="oxd-icon bi-trash"]'),
+            edit: this.page.getByTestId('[class="oxd-icon-button oxd-table-cell-action-space"] [class="oxd-icon bi-pencil-fill"]'),
+            help: this.page.getByTestId('InfoOutlinedIcon'),
+            sonarRedirect: this.page.getByTestId('sonar-redirect-icon-active'),
+            download: this.page.getByTestId("FileDownloadOutlinedIcon"),
+            redirectLink: this.page.getByTestId("ArrowOutwardIcon"),
+        };
+    }
+
+    async get() {
+        const button = await this.icon[this.iconName]
+        return button
+    }
+
+}

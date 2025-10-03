@@ -33,7 +33,7 @@ export class comboboxComponent {
     async clickAndSelectOption(option: string): Promise<void>  {
         const combobox = await this.get();
         await combobox.click();
-        await combobox.getByText(option,{ exact: true }).click();
+        await this.page.getByRole('option', { name: option }).click();
     }
 
 }
@@ -70,7 +70,7 @@ readonly page: Page
         const combobox = await this.get();
         await combobox.click();
         await combobox.fill(option);
-        await combobox.getByText(option,{ exact: true }).click();
+        await this.page.getByRole('option', { name: option }).click();
     }
 
 }
