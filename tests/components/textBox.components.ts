@@ -12,27 +12,14 @@ export default class TextBoxComponent {
         this.locatorObject = this.locators.pathForlocator ? this.page.locator(this.locators.pathForlocator) : this.locators.locatorObject ?? (() => { throw new Error('Either pathForlocator or locatorObject must be provided.'); })();
     }
 
-    async get():Promise<Locator>  {
-        const textBox = this.locatorObject
-        return textBox
-    }
+    get(): Locator { return this.locatorObject; }
 
 
-    async fillTextBox(text: string): Promise<void>  {
-        const element = await this.get();
-        await element.fill(text);
-    }
+    async fillTextBox(text: string): Promise<void>  { await this.locatorObject.fill(text); }
 
-    async clearTextBox(): Promise<void> {
-        const element = await this.get();
-        await element.fill('');
-    }
+    async clearTextBox(): Promise<void> { await this.locatorObject.fill(''); }
 
-    async clickAndTypeTextBox(text: string): Promise<void> {
-        const element = await this.get();
-        await element.click();
-        await element.fill(text);
-    }
+    async clickAndTypeTextBox(text: string): Promise<void> { await this.locatorObject.click(); await this.locatorObject.fill(text); }
 
 
 }

@@ -18,9 +18,12 @@ export class Table {
         this.columnsName = objectsTable.columnsName || [];
         this.ButtonActions = objectsTable.tableButtonActions ? objectsTable.tableButtonActions : null;
         this.locators = {
-            line: async () => await this.page.getByRole('row').filter({ has: await this.page.getByRole('cell') }).all(),
-            firstLine: async () => await this.page.getByRole('row').filter({ has: await this.page.getByRole('cell') }).first(),
-
+            line: async () => this.page.getByRole('row').filter({ has: this.page.getByRole('cell') }).all(),
+            firstLine: async () => {
+                const first = this.page.getByRole('row').filter({ has: this.page.getByRole('cell') }).first();
+                await first.waitFor({ state: 'visible' });
+                return first;
+            },
         };
         this.filterTextBox = objectsTable.hasTextBox ? new TextBoxComponent(this.page, {pathForlocator:'role=Textbox'}) : null
         this.columnIndex = {}
@@ -28,7 +31,7 @@ export class Table {
     }
 
     initializeColumnLocators(): { [key: string]: Locator } {
-        let columnLocators : {[key: string]: Locator } = {};
+        const columnLocators : {[key: string]: Locator } = {};
 
         for (const columnName of this.columnsName) {
             columnLocators[columnName] = this.page.getByRole('columnheader', { name: columnName })
@@ -51,15 +54,12 @@ export class Table {
     }
 
     async getColumnRowByColumnName(columnName: string): Promise<Locator[]> {
-        
         const lines = await this.getAllRows();
-        const columnIndex: Locator[] = []
-        for(let line of lines){
-            columnIndex.push(await line.getByRole('cell').nth(this.columnIndex[columnName]))
+        const columnIndex: Locator[] = [];
+        for (const line of lines) {
+            columnIndex.push(line.getByRole('cell').nth(this.columnIndex[columnName]));
         }
-        return columnIndex
-
-       
+        return columnIndex;
     }
 
 

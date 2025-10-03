@@ -11,35 +11,20 @@ export class comboboxComponent {
         this.locatorObject = this.locators.pathForlocator ? this.page.locator(this.locators.pathForlocator) : this.locators.locatorObject ?? (() => { throw new Error('Either pathForlocator or locatorObject must be provided.'); })();
     }
 
-    async get():Promise<Locator> {
-        return this.locatorObject
-    }
+    get(): Locator { return this.locatorObject; }
 
-    async click(): Promise<void>  {
-        const combobox = await this.get();
-        await combobox.click();
-    }
+    async click(): Promise<void> { await this.locatorObject.click(); }
 
-    async isVisible(): Promise<boolean>  {
-        const combobox = await this.get();
-        return combobox.isVisible();
-    }
+    async isVisible(): Promise<boolean> { return this.locatorObject.isVisible(); }
 
-    async selectOption(option: string): Promise<void>  {
-        const combobox = await this.get();
-        await combobox.selectOption({ label: option });
-    }
+    async selectOption(option: string): Promise<void> { await this.locatorObject.selectOption({ label: option }); }
 
-    async clickAndSelectOption(option: string): Promise<void>  {
-        const combobox = await this.get();
-        await combobox.click();
-        await this.page.getByRole('option', { name: option }).click();
-    }
+    async clickAndSelectOption(option: string): Promise<void> { await this.locatorObject.click(); await this.page.getByRole('option', { name: option }).click(); }
 
 }
 
 export class autoCompleteComponent extends comboboxComponent {
-readonly page: Page
+    readonly page: Page
     readonly locators: { pathForlocator?: string, locatorObject?: Locator }
     readonly locatorObject: Locator
 
@@ -50,27 +35,12 @@ readonly page: Page
         this.locatorObject = this.locators.pathForlocator ? this.page.locator(this.locators.pathForlocator) : this.locators.locatorObject ?? (() => { throw new Error('Either pathForlocator or locatorObject must be provided.'); })();
     }
 
-    async get():Promise<Locator>  {
-        return this.locatorObject
-    }
+    get(): Locator { return this.locatorObject; }
 
-    async fillAndPressEnter(option: string): Promise<void>  {
-        const combobox = await this.get();
-        await combobox.fill(option);
-        await combobox.press('Enter');
-    }
+    async fillAndPressEnter(option: string): Promise<void> { await this.locatorObject.fill(option); await this.locatorObject.press('Enter'); }
 
-    async fillAndSelectOption(option: string): Promise<void>  {
-        const combobox = await this.get();
-        await combobox.fill(option);
-        await combobox.selectOption({ label: option });
-    }
+    async fillAndSelectOption(option: string): Promise<void> { await this.locatorObject.fill(option); await this.locatorObject.selectOption({ label: option }); }
 
-    async clickAndSelectOption(option: string): Promise<void>  {
-        const combobox = await this.get();
-        await combobox.click();
-        await combobox.fill(option);
-        await this.page.getByRole('option', { name: option }).click();
-    }
+    async clickAndSelectOption(option: string): Promise<void> { await this.locatorObject.click(); await this.locatorObject.fill(option); await this.page.getByRole('option', { name: option }).click(); }
 
 }
