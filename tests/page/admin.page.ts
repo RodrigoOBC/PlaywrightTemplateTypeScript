@@ -1,35 +1,52 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import TextBoxComponent from '../components/textBox.components';
-import { ButtonComponent, LinkButtonComponent } from '../components/button.components';
+import { ButtonComponent, LinkButtonComponent, ButtonIconComponent } from '../components/button.components';
 import { SideBarComponent } from '../components/sideBar.components'
+import { comboboxComponent, autoCompleteComponent } from '../components/combobox.components';
+import { Table } from '../components/table.components';
 
-export class AdminPage {
+export class AdminUserPage {
     readonly page: Page;
     readonly sideBarComponent: SideBarComponent
     readonly userName: TextBoxComponent
-    readonly userRoleComboBox: TextBoxComponent
-    readonly employeeNameTextBox: TextBoxComponent
-    readonly statusComboBox: TextBoxComponent
+    readonly userRoleComboBox: comboboxComponent
+    readonly employeeNameTextBox: autoCompleteComponent
+    readonly statusComboBox: comboboxComponent
     readonly searchButton: ButtonComponent
-    readonly resetButton: ButtonComponent
-    readonly addButton: ButtonComponent
-    readonly deleteButton: ButtonComponent
+    readonly table: Table
 
     constructor(page: Page) {
         this.page = page;
         this.sideBarComponent = new SideBarComponent(this.page);
-        this.userName = new TextBoxComponent(this.page, {locatorObject :this.page.locator('input[name="username"]')});
-        this.userRoleComboBox = new TextBoxComponent(this.page, {locatorObject :this.page.locator('div[role="combobox"] >> nth=0')});
-        this.employeeNameTextBox = new TextBoxComponent(this.page, {locatorObject :this.page.locator('input[placeholder="Type for hints..."]')});
-        this.statusComboBox = new TextBoxComponent(this.page, {locatorObject :this.page.locator('div[role="combobox"] >> nth=1')});
+        this.userName = new TextBoxComponent(this.page, { locatorObject: this.page.getByRole('textbox').nth(1) });
+        this.userRoleComboBox = new comboboxComponent(this.page, { locatorObject: this.page.locator('.oxd-select-text').first() });
+        this.employeeNameTextBox = new autoCompleteComponent(this.page, { locatorObject: this.page.getByRole('textbox', { name: 'Type for hints...' }) });
+        this.statusComboBox = new comboboxComponent(this.page, { locatorObject: this.page.locator('.oxd-select-text').nth(1) });
         this.searchButton = new ButtonComponent(this.page, 'Search');
-        this.resetButton = new ButtonComponent(this.page, 'Reset');
-        this.addButton = new ButtonComponent(this.page, 'Add');
-        this.deleteButton = new ButtonComponent(this.page, 'Delete');
+        this.table = new Table(this.page,
+            {
+                columnsName: ['Username', 'User Role', 'Employee Name', 'Status', 'Actions'],
+                hasTextBox: false,
+                tableButtonActions: [
+                    { name: 'Edit', type: new ButtonIconComponent(this.page, 'edit') },
+                    { name: 'Delete', type: new ButtonIconComponent(this.page, 'delete') }
+                ]
+            }
+        );
     }
 
-    async navigate() {
+    async navigate(): Promise<void> {
+        await this.page.goto('/');
         await this.sideBarComponent.adminButton.click();
+    }
+
+    async validateUsersTable(userObjects: { Username: string, "User Role": string,  'Employee Name': string, Status: string, 'Actions': string }[]): Promise<void> {
+        const lines = await this.table.getColumnRowByColumnName('Username')
+        userObjects.forEach(async (userObjects, indice) => {
+            const line = lines[indice];
+            await expect(line).toHaveText(userObjects.Username);
+        });
+
     }
 
 }
