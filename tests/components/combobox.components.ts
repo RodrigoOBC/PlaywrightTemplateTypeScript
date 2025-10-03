@@ -37,10 +37,20 @@ export class autoCompleteComponent extends comboboxComponent {
 
     get(): Locator { return this.locatorObject; }
 
-    async fillAndPressEnter(option: string): Promise<void> { await this.locatorObject.fill(option); await this.locatorObject.press('Enter'); }
+    async fillAndPressEnter(option: string): Promise<void> {
+        await this.locatorObject.fill(option);
+        await this.locatorObject.press('Enter');
+    }
 
-    async fillAndSelectOption(option: string): Promise<void> { await this.locatorObject.fill(option); await this.locatorObject.selectOption({ label: option }); }
+    async fillAndSelectOption(option: string): Promise<void> {
+        await this.locatorObject.fill(option);
+        await this.locatorObject.selectOption({ label: option });
+    }
 
-    async clickAndSelectOption(option: string): Promise<void> { await this.locatorObject.click(); await this.locatorObject.fill(option); await this.page.getByRole('option', { name: option }).click(); }
+    async clickAndSelectOption(option: string): Promise<void> {
+        await this.locatorObject.click();
+        await this.locatorObject.fill(option);
+        await this.page.getByRole('option', { name: option }).click();
+    }
 
 }

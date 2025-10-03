@@ -4,7 +4,7 @@ import { type Locator, type Page } from '@playwright/test';
 export default class TextBoxComponent {
     readonly page: Page
     readonly locators: { pathForlocator?: string, locatorObject?: Locator }
-    readonly locatorObject: Locator 
+    readonly locatorObject: Locator
 
     constructor(page: Page, locators: { pathForlocator?: string, locatorObject?: Locator }) {
         this.page = page;
@@ -15,7 +15,7 @@ export default class TextBoxComponent {
     get(): Locator { return this.locatorObject; }
 
 
-    async fillTextBox(text: string): Promise<void>  { await this.locatorObject.fill(text); }
+    async fillTextBox(text: string): Promise<void> { await this.locatorObject.fill(text); }
 
     async clearTextBox(): Promise<void> { await this.locatorObject.fill(''); }
 
