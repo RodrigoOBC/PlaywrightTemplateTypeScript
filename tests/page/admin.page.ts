@@ -1,6 +1,6 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import TextBoxComponent from '../components/textBox.components';
-import { ButtonComponent, LinkButtonComponent, ButtonIconComponent } from '../components/button.components';
+import { ButtonComponent, ButtonIconComponent } from '../components/button.components';
 import { SideBarComponent } from '../components/sideBar.components'
 import { comboboxComponent, autoCompleteComponent } from '../components/combobox.components';
 import { Table } from '../components/table.components';
@@ -41,12 +41,11 @@ export class AdminUserPage {
     }
 
     async validateUsersTable(userObjects: { Username: string, "User Role": string,  'Employee Name': string, Status: string, 'Actions': string }[]): Promise<void> {
-        const lines = await this.table.getColumnRowByColumnName('Username')
-        userObjects.forEach(async (userObjects, indice) => {
-            const line = lines[indice];
-            await expect(line).toHaveText(userObjects.Username);
-        });
-
+        const lines = await this.table.getColumnRowByColumnName('Username');
+        for (let i = 0; i < userObjects.length; i++) {
+            const line = lines[i];
+            await expect(line).toHaveText(userObjects[i].Username);
+        }
     }
 
 }
