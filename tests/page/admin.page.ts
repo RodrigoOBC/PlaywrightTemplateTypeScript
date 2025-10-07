@@ -37,7 +37,6 @@ export class AdminUserPage {
 
     async navigate(): Promise<void> {
         await this.page.goto('/');
-        await this.page.pause();
         await this.sideBarComponent.adminButton.click();
     }
 
