@@ -2,6 +2,9 @@ import { test, expect } from './fixtures/fixtures';
 import { AdminUserPage } from './page/admin.page';
 
 
+test.beforeEach(async ({ page, authCookies }) => {
+  await page.context().addCookies(authCookies);
+});
 
 test.afterEach(async ({ page }) => {
   await page.context().close();
@@ -12,8 +15,8 @@ const CT01dataTest = [
 ]
 
 for (const dataTest of CT01dataTest) {
-  test(`Filtrar usuario ${dataTest['Username']}`, async ({ page, authCookies}) => {
-    await page.context().addCookies(authCookies);
+  test(`Filtrar usuario ${dataTest['Username']}`, async ({ page }) => {
+
     const adminUserPage = new AdminUserPage(page);
     await adminUserPage.navigate();
     await adminUserPage.userName.fillTextBox(dataTest['Username']);
