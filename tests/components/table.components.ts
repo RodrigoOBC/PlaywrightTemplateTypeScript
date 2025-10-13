@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { type Locator, type Page } from '@playwright/test';
-import {type ButtonIconComponent} from './button.components.ts';
+import {type ButtonIconComponent} from './button.components';
 import TextBoxComponent from '../components/textBox.components';
 
 export class Table {

@@ -1,6 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
 
-export class comboboxComponent {
+export class ComboboxComponent {
     readonly page: Page
     readonly locators: { pathForlocator?: string, locatorObject?: Locator }
     readonly locatorObject: Locator
@@ -23,7 +23,7 @@ export class comboboxComponent {
 
 }
 
-export class autoCompleteComponent extends comboboxComponent {
+export class AutoCompleteComponent extends ComboboxComponent {
     readonly page: Page
     readonly locators: { pathForlocator?: string, locatorObject?: Locator }
     readonly locatorObject: Locator

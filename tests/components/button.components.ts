@@ -35,7 +35,7 @@ export class LinkButtonComponent extends ButtonComponent {
 
 }
 
-export class radioButtonComponent extends ButtonComponent {
+export class RadioButtonComponent extends ButtonComponent {
     readonly page: Page
     readonly locator: Locator
 
