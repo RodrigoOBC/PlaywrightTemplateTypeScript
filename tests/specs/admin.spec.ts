@@ -1,5 +1,5 @@
-import { test, expect } from './fixtures/fixtures';
-import { AdminUserPage } from './page/admin.page';
+import { test } from '../fixtures/fixtures';
+import { AdminUserPage } from '../page/admin.page';
 
 
 test.beforeEach(async ({ page, authCookies }) => {

@@ -2,16 +2,16 @@ import { expect, type Page } from '@playwright/test';
 import TextBoxComponent from '../components/textBox.components';
 import { ButtonComponent, ButtonIconComponent } from '../components/button.components';
 import { SideBarComponent } from '../components/sideBar.components'
-import { comboboxComponent, autoCompleteComponent } from '../components/combobox.components';
+import { ComboboxComponent, AutoCompleteComponent } from '../components/combobox.components';
 import { Table } from '../components/table.components';
 
 export class AdminUserPage {
     readonly page: Page;
     readonly sideBarComponent: SideBarComponent
     readonly userName: TextBoxComponent
-    readonly userRoleComboBox: comboboxComponent
-    readonly employeeNameTextBox: autoCompleteComponent
-    readonly statusComboBox: comboboxComponent
+    readonly userRoleComboBox: ComboboxComponent
+    readonly employeeNameTextBox: AutoCompleteComponent
+    readonly statusComboBox: ComboboxComponent
     readonly searchButton: ButtonComponent
     readonly table: Table
 
@@ -19,9 +19,9 @@ export class AdminUserPage {
         this.page = page;
         this.sideBarComponent = new SideBarComponent(this.page);
         this.userName = new TextBoxComponent(this.page, { locatorObject: this.page.getByRole('textbox').nth(1) });
-        this.userRoleComboBox = new comboboxComponent(this.page, { locatorObject: this.page.locator('.oxd-select-text').first() });
-        this.employeeNameTextBox = new autoCompleteComponent(this.page, { locatorObject: this.page.getByRole('textbox', { name: 'Type for hints...' }) });
-        this.statusComboBox = new comboboxComponent(this.page, { locatorObject: this.page.locator('.oxd-select-text').nth(1) });
+        this.userRoleComboBox = new ComboboxComponent(this.page, { locatorObject: this.page.locator('.oxd-select-text').first() });
+        this.employeeNameTextBox = new AutoCompleteComponent(this.page, { locatorObject: this.page.getByRole('textbox', { name: 'Type for hints...' }) });
+        this.statusComboBox = new ComboboxComponent(this.page, { locatorObject: this.page.locator('.oxd-select-text').nth(1) });
         this.searchButton = new ButtonComponent(this.page, 'Search');
         this.table = new Table(this.page,
             {
