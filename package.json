@@ -17,7 +17,7 @@
   "homepage": "https://github.com/RodrigoOBC/PlaywrightTemplateTypeScript#readme",
   "devDependencies": {
     "@eslint/js": "^9.36.0",
-    "@playwright/test": "^1.55.1",
+    "@playwright/test": "^1.56.0",
     "@types/node": "^24.5.2",
     "eslint": "^9.36.0",
     "globals": "^16.4.0",
