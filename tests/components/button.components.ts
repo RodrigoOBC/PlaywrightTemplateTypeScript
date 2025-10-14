@@ -12,9 +12,9 @@ export class ButtonComponent {
 
     get(): Locator { return this.locator; }
 
-    async click(): Promise<void>  { await this.locator.click(); }
+    async click(): Promise<void> { await this.locator.click(); }
 
-    async isVisible(): Promise<boolean>  { return this.locator.isVisible(); }
+    async isVisible(): Promise<boolean> { return this.locator.isVisible(); }
 
 
 }
@@ -28,7 +28,7 @@ export class LinkButtonComponent extends ButtonComponent {
         super(page, '');
         this.page = page;
         this.locators = { pathForlocator: locators.pathForlocator, locatorObject: locators.locatorObject };
-        this.locator = this.locators.pathForlocator ? this.page.getByRole('link',{name: this.locators.pathForlocator}) : this.locators.locatorObject ?? (() => { throw new Error('Either pathForlocator or locatorObject must be provided.'); })();
+        this.locator = this.locators.pathForlocator ? this.page.getByRole('link', { name: this.locators.pathForlocator }) : this.locators.locatorObject ?? (() => { throw new Error('Either pathForlocator or locatorObject must be provided.'); })();
     }
 
     get(): Locator { return this.locator; }
@@ -42,7 +42,7 @@ export class RadioButtonComponent extends ButtonComponent {
     constructor(page: Page, private name: string) {
         super(page, name);
         this.page = page;
-        this.locator = this.page.getByText(name, {exact: true});
+        this.locator = this.page.getByText(name, { exact: true });
     }
 
     get(): Locator { return this.locator; }
@@ -71,4 +71,16 @@ export class ButtonIconComponent extends ButtonComponent {
 
     get(): Locator { return this.icon[this.iconName]; }
 
+}
+
+export class ListButtonComponent {
+    readonly page: Page
+    readonly locator: Locator
+
+    constructor(page: Page, name: string) {
+        this.page = page;
+        this.locator = this.page.getByRole('listitem').filter({ hasText: name });
+    }
+
+    get(): Locator { return this.locator; }
 }
