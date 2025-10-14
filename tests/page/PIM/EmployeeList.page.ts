@@ -1,14 +1,12 @@
 import { expect, type Page } from '@playwright/test';
 import TextBoxComponent from '../../components/textBox.components';
 import { ButtonComponent, ButtonIconComponent } from '../../components/button.components';
-import { SideBarComponent } from '../../components/sideBar.components'
 import { ComboboxComponent, AutoCompleteComponent } from '../../components/combobox.components';
 import { Table } from '../../components/table.components';
 
 
 export class EmployerListPage {
     readonly page: Page;
-    readonly sideBarComponent: SideBarComponent
     readonly employerNameTextBox: AutoCompleteComponent
     readonly employmentID: TextBoxComponent
     readonly employmentStatusComboBox: ComboboxComponent
@@ -21,7 +19,6 @@ export class EmployerListPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.sideBarComponent = new SideBarComponent(this.page);
         this.employerNameTextBox = new AutoCompleteComponent(this.page, { locatorObject: this.page.getByRole('textbox', { name: 'Type for hints...' }) });
         this.employmentID = new TextBoxComponent(this.page, { locatorObject: this.page.getByRole('textbox').nth(1) });
         this.employmentStatusComboBox = new ComboboxComponent(this.page, { locatorObject: this.page.locator('.oxd-select-text').first() });
@@ -42,10 +39,7 @@ export class EmployerListPage {
         );
     }
 
-    async navigate(): Promise<void> {
-        await this.page.goto('/');
-        await this.sideBarComponent.pimButton.click();
-    }
+   
 
-    
+
 }
