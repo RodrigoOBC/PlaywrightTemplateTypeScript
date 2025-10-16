@@ -17,7 +17,7 @@ export class PIMPage {
         this.EmployerListPage = new EmployerListPage(this.page);
         this.EmployerAddPage = new EmployerAddPage(this.page);
         this.sideBarComponent = new SideBarComponent(this.page);
-        this.headerMenuComponent = new HeaderMenuComponent(this.page, []);
+        this.headerMenuComponent = new HeaderMenuComponent(this.page, ['Configuration', 'Employee List', 'Add Employee', 'Reports', 'Data Import', 'Termination Reasons', 'Custom Fields']);
         
     }
 
@@ -27,11 +27,11 @@ export class PIMPage {
     }
 
     async navigateToAddEmployee(): Promise<void> {
-        
+        await this.headerMenuComponent.headerMenuButtons['Add Employee'].click();
     }
 
     async navigateToEmployeeList(): Promise<void> {
-        
+        this.headerMenuComponent.headerMenuButtons['Employee List'].click();
     }
 
 }
