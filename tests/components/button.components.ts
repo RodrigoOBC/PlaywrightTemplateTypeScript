@@ -12,7 +12,9 @@ export class ButtonComponent {
 
     get(): Locator { return this.locator; }
 
-    async click(): Promise<void> { await this.locator.click(); }
+    async click(): Promise<void> {
+        const button: Locator = this.get();
+        await button.click(); }
 
     async isVisible(): Promise<boolean> { return this.locator.isVisible(); }
 
@@ -73,11 +75,12 @@ export class ButtonIconComponent extends ButtonComponent {
 
 }
 
-export class ListButtonComponent {
+export class ListButtonComponent extends ButtonComponent {
     readonly page: Page
     readonly locator: Locator
 
     constructor(page: Page, name: string) {
+        super(page, name);
         this.page = page;
         this.locator = this.page.getByRole('listitem').filter({ hasText: name });
     }

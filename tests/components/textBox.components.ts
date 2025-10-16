@@ -15,11 +15,21 @@ export default class TextBoxComponent {
     get(): Locator { return this.locatorObject; }
 
 
-    async fillTextBox(text: string): Promise<void> { await this.locatorObject.fill(text); }
+    async fillTextBox(text: string): Promise<void> {
+        const element: Locator = this.get();
+        await element.fill(text);
+    }
 
-    async clearTextBox(): Promise<void> { await this.locatorObject.fill(''); }
+    async clearTextBox(): Promise<void> {
+        const element: Locator = this.get();
+        await element.fill('');
+    }
 
-    async clickAndTypeTextBox(text: string): Promise<void> { await this.locatorObject.click(); await this.locatorObject.fill(text); }
+    async clickAndTypeTextBox(text: string): Promise<void> {
+        const element: Locator = this.get();
+        await element.click();
+        await element.fill(text);
+    }
 
 
 }
