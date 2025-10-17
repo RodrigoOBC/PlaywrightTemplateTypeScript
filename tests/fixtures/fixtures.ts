@@ -2,14 +2,14 @@ import { test as base } from '@playwright/test';
 import { LoginPage } from '../page/login.page'
 
 type MyFixtures = {
-  authCookies: any[];
+  authAdmCookies: any[];
 };
 
 
 
 export const test = base.extend<MyFixtures>({
 
-    authCookies: async ({ page }, use) => {
+    authAdmCookies: async ({ page }, use) => {
         const loginPage = new LoginPage(page);
         await loginPage.navigate();
         await loginPage.makeLogin('Admin', 'admin123');
