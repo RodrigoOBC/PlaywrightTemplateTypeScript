@@ -11,7 +11,9 @@ test.afterEach(async ({ page }) => {
 });
 
 const CT01dataTest = [
-  { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', employeeID: '', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' }
+  { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', employeeID: '', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
+  { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', employeeID: '', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' },
+  { firstName: 'João', middleName: 'Pereira', lastName: 'Costa', employeeID: '', loginDetails: false, userName: '', status: '', password: '', confirmPassword: '' }
   
 ]
 
@@ -19,12 +21,10 @@ for (const dataTest of CT01dataTest) {
   test(`Criar usuario ${dataTest['firstName']}`, async ({ page }) => {
 
     const pimPage = new PIMPage(page);
-    await page.pause()
     await pimPage.navigate();
     await pimPage.navigateToAddEmployee();
     await pimPage.EmployerAddPage.fillEmployerForm(dataTest);
     await pimPage.EmployerAddPage.saveButton.click();
-    
-
+    await pimPage.verifySucessMessage()
   });
 }
