@@ -40,7 +40,9 @@ export class EmployerListPage {
     }
 
     
+    async searchEmployeeByName(employeeName: string): Promise<void> {}
 
+    async validateEmployeeInTable(firstName: string, lastName: string): Promise<void> {}
    
 
 
