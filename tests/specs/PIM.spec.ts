@@ -18,7 +18,7 @@ const CT01dataTest = [
 ]
 
 for (const dataTest of CT01dataTest) {
-  test(`Criar usuario ${dataTest['firstName']}`, async ({ page }) => {
+  test(`Create user ${dataTest['firstName']}`, async ({ page }) => {
 
     const pimPage = new PIMPage(page);
     await pimPage.navigate();
