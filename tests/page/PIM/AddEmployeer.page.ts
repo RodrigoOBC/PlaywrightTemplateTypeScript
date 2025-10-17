@@ -21,7 +21,7 @@ export class EmployerAddPage {
         this.employerFirstNameTextBox = new TextBoxComponent(this.page, { locatorObject: this.page.getByRole('textbox', { name: 'First Name' }) });
         this.employerMidleNameTextBox = new TextBoxComponent(this.page, { locatorObject: this.page.getByRole('textbox', { name: 'Middle Name' }) });
         this.employerLastNameTextBox = new TextBoxComponent(this.page, { locatorObject: this.page.getByRole('textbox', { name: 'Last Name' }) });
-        this.employmentIDTextBox = new TextBoxComponent(this.page, { locatorObject: this.page.getByRole('textbox', { name: 'Employee Id' }) });
+        this.employmentIDTextBox = new TextBoxComponent(this.page, { locatorObject: this.page.locator('[class^="oxd-input-group"]').filter({hasText: 'Employee Id'}).getByRole('textbox') });
         this.userNameTextBox = new TextBoxComponent(this.page, { locatorObject: this.page.locator('[class^="oxd-input-group"]').filter({hasText: 'Username'}).getByRole('textbox') });
         this.userStatus = (name: string) => new RadioButtonComponent(this.page, name);
         this.passWordTextBox = new TextBoxComponent(this.page, { locatorObject: this.page.locator('[type="password"]').first() });
@@ -35,12 +35,14 @@ export class EmployerAddPage {
         await this.employerMidleNameTextBox.fillTextBox(employerData.middleName);
 
         await this.employerLastNameTextBox.fillTextBox(employerData.lastName);
-        if (employerData.employeeID !== "") {
+        if (employerData.employeeID === "") {
+            const idGenerated = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            await this.employmentIDTextBox.fillTextBox(idGenerated);
+        } else {
             await this.employmentIDTextBox.fillTextBox(employerData.employeeID);
         }
         if (employerData.loginDetails) {
             await this.page.getByRole('checkbox').locator('..').check();
-            await this.page.pause()
             await this.userNameTextBox.fillTextBox(employerData.userName);
             await this.userStatus(employerData.status).click();
             await this.passWordTextBox.fillTextBox(employerData.password);
