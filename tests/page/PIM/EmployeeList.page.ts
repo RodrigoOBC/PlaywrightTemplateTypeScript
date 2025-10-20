@@ -19,7 +19,7 @@ export class EmployerListPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.employerNameTextBox = new AutoCompleteComponent(this.page, { locatorObject: this.page.getByRole('textbox', { name: 'Type for hints...' }) });
+        this.employerNameTextBox = new AutoCompleteComponent(this.page, { locatorObject: this.page.locator('[class^="oxd-input-group"]').filter({hasText: 'Employee Name'}).getByRole('textbox')});
         this.employmentID = new TextBoxComponent(this.page, { locatorObject: this.page.getByRole('textbox').nth(1) });
         this.employmentStatusComboBox = new ComboboxComponent(this.page, { locatorObject: this.page.locator('.oxd-select-text').first() });
         this.employmentIncludeComboBox = new ComboboxComponent(this.page, { locatorObject: this.page.locator('.oxd-select-text').nth(1) });
@@ -40,9 +40,17 @@ export class EmployerListPage {
     }
 
     
-    async searchEmployeeByName(employeeName: string): Promise<void> {}
+    async searchEmployeeByName(employeeName: string): Promise<void> {
+        await this.employerNameTextBox.clickAndSelectOption(employeeName);
+        await this.searchButton.click();
+    }
 
-    async validateEmployeeInTable(firstName: string, lastName: string): Promise<void> {}
+    async validateEmployeeInTable(firstName: string, Middle: string, lastName: string): Promise<void> {
+        const employeNames = await this.table.getColumnRowByColumnName('First (& Middle) Name');
+        for (let employeName of employeNames) {
+            await expect(employeName).toHaveText(firstName + ' ' + Middle);
+        }
+    }
    
 
 

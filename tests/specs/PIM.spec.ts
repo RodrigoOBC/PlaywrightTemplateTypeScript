@@ -2,8 +2,8 @@ import { test } from '../fixtures/fixtures';
 import { PIMPage } from '../page/PIM/PIM.page';
 
 
-test.beforeEach(async ({ page, authCookies }) => {
-  await page.context().addCookies(authCookies);
+test.beforeEach(async ({ page, authAdmCookies }) => {
+  await page.context().addCookies(authAdmCookies);
 });
 
 test.afterEach(async ({ page }) => {
@@ -27,4 +27,12 @@ for (const dataTest of CT01dataTest) {
     await pimPage.EmployerAddPage.saveButton.click();
     await pimPage.verifySucessMessage()
   });
+
+  test(`Verify created user ${dataTest['firstName']}`, async ({ page }) => {
+    const pimPage = new PIMPage(page);
+    await pimPage.navigate();
+    await pimPage.navigateToEmployeeList();
+    await pimPage.EmployerListPage.searchEmployeeByName(`${dataTest['firstName']} ${dataTest['middleName']} ${dataTest['lastName']}`);  
+    await pimPage.EmployerListPage.validateEmployeeInTable(dataTest['firstName'], dataTest['middleName'], dataTest['lastName']);
+  })
 }
