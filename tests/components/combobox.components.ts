@@ -50,7 +50,7 @@ export class AutoCompleteComponent extends ComboboxComponent {
     async clickAndSelectOption(option: string): Promise<void> {
         await this.locatorObject.click();
         await this.locatorObject.fill(option);
-        await this.page.getByRole('option', { name: option }).click();
+        await this.page.getByRole('option', { name: option }).first().click();
     }
 
 }
