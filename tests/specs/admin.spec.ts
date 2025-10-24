@@ -2,8 +2,8 @@ import { test } from '../fixtures/fixtures';
 import { AdminUserPage } from '../page/admin.page';
 
 
-test.beforeEach(async ({ page, authCookies }) => {
-  await page.context().addCookies(authCookies);
+test.beforeEach(async ({ page, authAdmCookies }) => {
+  await page.context().addCookies(authAdmCookies);
 });
 
 test.afterEach(async ({ page }) => {
