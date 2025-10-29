@@ -13,7 +13,7 @@ export class HeaderMenuComponent {
     }
 
     initializeMenuButtons(): { [key: string]: ListButtonComponent } {
-        let headersMenuButtons: { [key: string]: ListButtonComponent } = {};
+        const headersMenuButtons: { [key: string]: ListButtonComponent } = {};
         for (const name of this.elementsNames) {
             headersMenuButtons[name] = new ListButtonComponent(this.page, name);
         }
