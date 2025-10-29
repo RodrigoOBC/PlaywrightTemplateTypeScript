@@ -33,8 +33,8 @@ export class PIMPage {
         const menssagerText = await this.menssagerComponent.getTextMessage();
 
         await expect(this.menssagerComponent.get()).toBeVisible();
-        await expect(menssagerColor).toBe(this.menssagerComponent.color);
-        await expect(menssagerText).toContain(this.menssagerComponent.textMessage);
+        expect(menssagerColor).toBe(this.menssagerComponent.color);
+        expect(menssagerText).toContain(this.menssagerComponent.textMessage);
     }
 
     async navigateToAddEmployee(): Promise<void> {
@@ -42,7 +42,7 @@ export class PIMPage {
     }
 
     async navigateToEmployeeList(): Promise<void> {
-        this.headerMenuComponent.headerMenuButtons['Employee List'].click();
+        await this.headerMenuComponent.headerMenuButtons['Employee List'].click();
     }
 
 }
