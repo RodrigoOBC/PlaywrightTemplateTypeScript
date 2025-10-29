@@ -80,11 +80,9 @@ export const test = base.extend<MyFixtures>({
         const existingUsers:ApiResponse = await response.json()  as ApiResponse;
         
         if (existingUsers.data.length > 0) {
-          console.log(`Deleting existing test user with employeeID: ${employeeId}`);
-          const deleteResponse = await orangeApi.delete(`/web/index.php/api/v2/pim/employees`, { 
+          await orangeApi.delete(`/web/index.php/api/v2/pim/employees`, { 
             data: { ids: [existingUsers.data[0].empNumber] }
           });
-          console.log(`Deleted user response status: ${deleteResponse.status()}`);
         } else {
           console.log(`No user found with employeeID: ${employeeId}`);
         }
@@ -110,7 +108,6 @@ export const test = base.extend<MyFixtures>({
           middleName: randomUser.middleName, 
           lastName: randomUser.lastName 
         });
-        console.log(`Created CT02 test data with user: ${randomUser.firstName} ${randomUser.lastName}`);
       }
       
       return CT02dataTest;
