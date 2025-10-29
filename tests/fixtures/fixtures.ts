@@ -7,8 +7,31 @@ interface EmployeeSummary {
   lastName: string; 
 }
 
+interface Employee {
+  empNumber: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  employeeId: string;
+}
+
+interface ApiResponse {
+  data: Employee[];
+}
+
+interface Cookie {
+  name: string;
+  value: string;
+  domain: string;
+  path: string;
+  expires?: number;
+  httpOnly?: boolean;
+  secure?: boolean;
+  sameSite?: 'Strict' | 'Lax' | 'None';
+}
+
 type MyFixtures = {
-  authAdmCookies: any[];
+  authAdmCookies: Cookie[];
   orangeApi: APIRequestContext;
   cleanupAndPrepareTestData: { CT02dataTest: EmployeeSummary[] };
   cleanupUsersById: (employeeIds: string) => Promise<void>;
@@ -61,9 +84,9 @@ export const test = base.extend<MyFixtures>({
     await page.context().addCookies(authAdmCookies);
 
     // Cleanup existing test users
-    for(let users of CT01dataTest){
+    for(const users of CT01dataTest){
       const response = await orangeApi.get(`/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&employeeId=${users.employeeID}&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC`);
-      const existingUsers =  await response.json();
+      const existingUsers:ApiResponse =  await response.json() as ApiResponse;
       if (existingUsers.data.length > 0) {
         console.log(existingUsers.data);
         console.log(`Deleting existing test user with employeeID: ${users.employeeID}`);
@@ -74,7 +97,7 @@ export const test = base.extend<MyFixtures>({
     
     // Prepare test data with random user
     const responseAllUsers = await orangeApi.get('/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC');
-    const allUsers = await responseAllUsers.json();
+    const allUsers:ApiResponse = await responseAllUsers.json()  as ApiResponse;;
     if (Array.isArray(allUsers.data) && allUsers.data.length > 0) {
       const randomUser = allUsers.data[Math.floor(Math.random() * allUsers.data.length)];
       CT02dataTest.push({ firstName: randomUser.firstName, middleName: randomUser.middleName, lastName: randomUser.lastName });
@@ -88,7 +111,7 @@ export const test = base.extend<MyFixtures>({
     
     const cleanupFunction = async (employeeId: string) => {
         const response = await orangeApi.get(`/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&employeeId=${employeeId}&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC`);
-        const existingUsers = await response.json();
+        const existingUsers:ApiResponse = await response.json()  as ApiResponse;
         
         if (existingUsers.data.length > 0) {
           console.log(`Deleting existing test user with employeeID: ${employeeId}`);
@@ -112,7 +135,7 @@ export const test = base.extend<MyFixtures>({
       const CT02dataTest: EmployeeSummary[] = [];
       
       const responseAllUsers = await orangeApi.get('/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC');
-      const allUsers = await responseAllUsers.json();
+      const allUsers:ApiResponse = await responseAllUsers.json()  as ApiResponse;
       
       if (Array.isArray(allUsers.data) && allUsers.data.length > 0) {
         const randomUser = allUsers.data[Math.floor(Math.random() * allUsers.data.length)];
