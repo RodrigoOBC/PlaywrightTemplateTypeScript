@@ -63,7 +63,7 @@ export class ButtonIconComponent extends ButtonComponent {
         this.iconName = iconName;
         this.icon = {
             delete: this.page.locator('[class="oxd-icon-button oxd-table-cell-action-space"] [class="oxd-icon bi-trash"]'),
-            edit: this.page.getByTestId('[class="oxd-icon-button oxd-table-cell-action-space"] [class="oxd-icon bi-pencil-fill"]'),
+            edit: this.page.locator('[class="oxd-icon-button oxd-table-cell-action-space"] [class="oxd-icon bi-pencil-fill"]'),
             help: this.page.getByTestId('InfoOutlinedIcon'),
             sonarRedirect: this.page.getByTestId('sonar-redirect-icon-active'),
             download: this.page.getByTestId("FileDownloadOutlinedIcon"),
