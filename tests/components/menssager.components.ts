@@ -29,17 +29,19 @@ export class MenssagerComponent {
 
     async getCollor(): Promise<string> { 
         const menssagerBox: Locator = this.get();
-        let color = await menssagerBox.evaluate((element) =>
+        const color = await menssagerBox.evaluate((element) =>
             window.getComputedStyle(element).getPropertyValue('background'),
         );
 
-        const colorTransformed:string = await this.tranformColor(color);
+        const colorTransformed:string =  this.tranformColor(color);
         return colorTransformed;
 
      }   
 
-     async tranformColor(color: string): Promise<string> { 
-        const match = color.match(/rgb\(\d+,\s*\d+,\s*\d+\)/i);
+    tranformColor(colorBefore: string): string { 
+        const regex = /rgb\(\d+,\s*\d+,\s*\d+\)/i;
+        const match = regex.exec(colorBefore);
+        let color = colorBefore;
         if (match) {
             color = match[0];
         }
@@ -48,7 +50,7 @@ export class MenssagerComponent {
 
      async getTextMessage(): Promise<string> { 
         const menssagerBox: Locator = this.get();
-        let message = await menssagerBox.textContent() || '';
+        const message = await menssagerBox.textContent() || '';
         return message;
      }
 }
