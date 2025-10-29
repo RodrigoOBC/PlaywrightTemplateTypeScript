@@ -47,8 +47,10 @@ export class EmployerListPage {
 
     async validateEmployeeInTable(firstName: string, Middle: string, lastName: string): Promise<void> {
         const employeNames = await this.table.getColumnRowByColumnName('First (& Middle) Name');
-        for (let employeName of employeNames) {
+        const lastNames = await this.table.getColumnRowByColumnName('Last Name');
+        for (const employeName of employeNames) {
             await expect(employeName).toHaveText(firstName + ' ' + Middle);
+            expect(lastNames).toContain(lastName);
         }
     }
    
