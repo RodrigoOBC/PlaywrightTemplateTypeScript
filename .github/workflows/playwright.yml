@@ -19,6 +19,8 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests Employer
       run: npx playwright test PIM.spec --reporter=junit --output=playwright-report/employer
+      env:
+        CI: true
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
