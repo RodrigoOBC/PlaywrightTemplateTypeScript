@@ -1,7 +1,7 @@
 import { expect, type Page } from '@playwright/test';
 import { SideBarComponent } from '../../components/sideBar.components'
-import { EmployerAddPage } from './AddEmployeer.page'
-import { EmployerListPage } from './EmployeeList.page'
+import { EmployerAddPage } from './AddEmployer.page'
+import { EmployerListPage } from './EmployerList.page'
 import { HeaderMenuComponent } from '../../components/headerMenu.components';
 import { MenssagerComponent } from '../../components/menssager.components';
 
