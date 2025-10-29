@@ -16,9 +16,6 @@ test.afterEach(async ({ page }) => {
   await page.context().close();
 });
 
-test.afterEach(async ({ page }) => {
-  await page.context().close();
-});
 
 
 for (const dataTest of CT01dataTest) {
