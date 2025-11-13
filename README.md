@@ -27,9 +27,9 @@ Siga estas instruções para ter uma cópia do projeto rodando em sua máquina l
 
 Você precisa ter o Node.js e o npm instalados em sua máquina.
 
-*   **npm**
+*   **pnpm**
     ```sh
-    npm install npm@latest -g
+    npm install -g pnpm
     ```
 
 ### 📦 Instalação
@@ -44,11 +44,11 @@ Você precisa ter o Node.js e o npm instalados em sua máquina.
     ```
 3.  Instale as dependências do NPM:
     ```sh
-    npm install
+    pnpm install
     ```
 4.  Instale os navegadores do Playwright:
     ```sh
-    npx playwright install
+    pnpm exec playwright install
     ```
 
 ---
@@ -59,22 +59,22 @@ Você precisa ter o Node.js e o npm instalados em sua máquina.
 
 *   **Para rodar todos os testes em modo headless (padrão):**
     ```sh
-    npx playwright test
+    pnpm exec playwright test
     ```
 
 *   **Para rodar os testes em modo "headed" (com navegador visível):**
     ```sh
-    npx playwright test --headed
+    pnpm exec playwright test --headed
     ```
 
 *   **Para rodar os testes em um navegador específico:**
     ```sh
-    npx playwright test --project=chromium
+    pnpm exec playwright test --project=chromium
     ```
 
 *   **Para abrir o modo de UI do Playwright:**
     ```sh
-    npx playwright test --ui
+    pnpm exec playwright test --ui
     ```
 
 ### Visualizando os Relatórios
@@ -82,7 +82,7 @@ Você precisa ter o Node.js e o npm instalados em sua máquina.
 Após a execução dos testes, um relatório HTML será gerado na pasta `playwright-report`. Para abri-lo, use o comando:
 
 ```sh
-npx playwright show-report
+pnpm exec playwright show-report
 ```
 
 ---
