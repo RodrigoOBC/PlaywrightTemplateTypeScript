@@ -1,10 +1,10 @@
 import { test as base, request, APIRequestContext } from '@playwright/test';
 import { LoginPage } from '../page/login.page'
 
-interface EmployeeSummary { 
-  firstName: string; 
-  middleName?: string; 
-  lastName: string; 
+interface EmployeeSummary {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
 }
 
 interface Employee {
@@ -35,7 +35,8 @@ type MyFixtures = {
   orangeApi: APIRequestContext;
   cleanupAndPrepareTestData: { CT02dataTest: EmployeeSummary[] };
   cleanupUsersById: (employeeIds: string) => Promise<void>;
-  createCT02TestData: () => Promise<EmployeeSummary[]>;
+  getUsersByTest: () => Promise<EmployeeSummary[]>;
+  createUserByTest: (CTdateForTest: ApiResponse) => Promise<void>;
 };
 
 
@@ -74,46 +75,71 @@ export const test = base.extend<MyFixtures>({
 
   cleanupUsersById: async ({ page, authAdmCookies, orangeApi }, use) => {
     await page.context().addCookies(authAdmCookies);
-    
+
     const cleanupFunction = async (employeeId: string) => {
-        const response = await orangeApi.get(`/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&employeeId=${employeeId}&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC`);
-        const existingUsers:ApiResponse = await response.json()  as ApiResponse;
-        
-        if (existingUsers.data.length > 0) {
-          await orangeApi.delete(`/web/index.php/api/v2/pim/employees`, { 
-            data: { ids: [existingUsers.data[0].empNumber] }
-          });
-        } else {
-          console.log(`No user found with employeeID: ${employeeId}`);
-        }
-      
+      const response = await orangeApi.get(`/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&employeeId=${employeeId}&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC`);
+      const existingUsers: ApiResponse = await response.json() as ApiResponse;
+
+      if (existingUsers.data.length > 0) {
+        await orangeApi.delete(`/web/index.php/api/v2/pim/employees`, {
+          data: { ids: [existingUsers.data[0].empNumber] }
+        });
+      } else {
+        console.log(`No user found with employeeID: ${employeeId}`);
+      }
+
     };
 
     await use(cleanupFunction);
   },
 
-  createCT02TestData: async ({ page, authAdmCookies, orangeApi }, use) => {
+  getUsersByTest: async ({ page, authAdmCookies, orangeApi }, use) => {
     await page.context().addCookies(authAdmCookies);
-    
+
     const createTestDataFunction = async (): Promise<EmployeeSummary[]> => {
       const CT02dataTest: EmployeeSummary[] = [];
-      
+
       const responseAllUsers = await orangeApi.get('/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC');
-      const allUsers:ApiResponse = await responseAllUsers.json()  as ApiResponse;
-      
+      const allUsers: ApiResponse = await responseAllUsers.json() as ApiResponse;
+
       if (Array.isArray(allUsers.data) && allUsers.data.length > 0) {
         const randomUser = allUsers.data[Math.floor(Math.random() * allUsers.data.length)];
-        CT02dataTest.push({ 
-          firstName: randomUser.firstName, 
-          middleName: randomUser.middleName, 
-          lastName: randomUser.lastName 
+        CT02dataTest.push({
+          firstName: randomUser.firstName,
+          middleName: randomUser.middleName,
+          lastName: randomUser.lastName
         });
       }
-      
+
       return CT02dataTest;
     };
 
     await use(createTestDataFunction);
+  },
+
+  createUserByTest: async ({ page, authAdmCookies, orangeApi }, use) => {
+    await page.context().addCookies(authAdmCookies);
+    const createUserFunction = async (CTdateForTest: ApiResponse): Promise<void> => {
+      for (const userData of CTdateForTest.data) {
+        const employeeName: string = `${userData.firstName} ${userData.middleName ?? ''} ${userData.lastName}`.trim();
+        const reponseUsers = await orangeApi.get(`web/index.php/api/v2/pim/employees?nameOrId=${employeeName}&includeEmployees=onlyCurrent`)
+        const usersJson: ApiResponse = await reponseUsers.json() as ApiResponse;
+        if (usersJson.data.length === 0) {
+
+          await orangeApi.post('/web/index.php/api/v2/pim/employees', {
+            data: {
+              firstName: userData.firstName,
+              middleName: userData.middleName,
+              lastName: userData.lastName,
+              employeeId: userData.employeeId
+            }
+          });
+
+        }
+
+      }
+    }
+    use(createUserFunction)
   }
 
 })
