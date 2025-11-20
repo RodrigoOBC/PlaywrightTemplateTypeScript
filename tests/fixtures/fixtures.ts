@@ -34,6 +34,10 @@ type MyFixtures = {
   authAdmCookies: Cookie[];
   orangeApi: APIRequestContext;
   cleanupAndPrepareTestData: { CT02dataTest: EmployeeSummary[] };
+  adminTestData: {
+    CT01DataADMIN: { userRole: string; employeeName: string; status: string; username: string; password: string }[];
+    CT02DataADMIN: { userRole: string; employeeName: string; status: string; username: string; password: string }[];
+  }
   cleanupUsersById: (employeeIds: string) => Promise<void>;
   getUsersByTest: () => Promise<EmployeeSummary[]>;
   createUserByTest: (CTdateForTest: ApiResponse) => Promise<void>;
@@ -42,6 +46,18 @@ type MyFixtures = {
 
 
 export const test = base.extend<MyFixtures>({
+
+  adminTestData: {
+    CT01DataADMIN : [
+      { userRole: 'Admin', employeeName: 'Teste Cabral Silva', status: 'Enabled', username: 'AdminTest1', password: 'Admin@123' },
+      { userRole: 'ESS', employeeName: 'Maria Oliveira Souza', status: 'Disabled', username: 'ESSLinda1', password: 'ESS@1234' }
+    ],
+    CT02DataADMIN : [
+      { userRole: 'Admin', employeeName: 'Teste Cabral Silva', status: 'Enabled', username: 'AdminTest1', password: 'Admin@123' },
+      { userRole: 'ESS', employeeName: 'Maria Oliveira Souza', status: 'Disabled', username: 'ESSLinda1', password: 'ESS@1234' }
+    ]
+
+  },
 
   authAdmCookies: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
@@ -140,8 +156,9 @@ export const test = base.extend<MyFixtures>({
       }
     }
     use(createUserFunction)
-  }
+  },
 
+  
 })
 
 export const expect = test.expect;
