@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+  import { defineConfig, devices } from '@playwright/test';
 import { env } from 'node:process';
 /**
  * Read environment variables from file.
