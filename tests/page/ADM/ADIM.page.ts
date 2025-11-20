@@ -3,6 +3,7 @@ import { SideBarComponent } from '../../components/sideBar.components'
 import { HeaderMenuComponent } from '../../components/headerMenu.components';
 import { MenssagerComponent } from '../../components/menssager.components';
 import { AddAdminPage } from './AddAdmin.page'
+import { AdminListPage } from './AdminList.page'
 
 
 export class AdminUserPage {
@@ -11,6 +12,7 @@ export class AdminUserPage {
     readonly headerMenuComponent: HeaderMenuComponent
     readonly menssagerComponent: MenssagerComponent
     readonly addAdminPage: AddAdminPage
+    readonly adminListPage: AdminListPage
 
     constructor(page: Page) {
         this.page = page;
@@ -18,6 +20,7 @@ export class AdminUserPage {
         this.headerMenuComponent = new HeaderMenuComponent(this.page, ['User Management', 'Job', 'Organization', 'Qualifications', 'Skills', 'Education', 'Licenses', 'Languages', 'Memberships']);
         this.menssagerComponent = new MenssagerComponent(this.page, 'rgb(52, 188, 64)', 'Success', 'Successfully Saved');
         this.addAdminPage = new AddAdminPage(this.page);
+        this.adminListPage = new AdminListPage(this.page);
     }
 
     async navigate(): Promise<void> {

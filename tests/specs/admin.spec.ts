@@ -10,18 +10,14 @@ test.afterEach(async ({ page }) => {
   await page.context().close();
 });
 
-test.only(`CT01 - Create Admin Users`, async ({ page, createUserByTest: createCT01TestData }) => {
+test(`CT01 - Create Admin Users`, async ({ page, createUserByTest: createCT01TestData, adminTestData }) => {
   const adminUserPage = new AdminUserPage(page);
   const preConditionData = { data: [
     { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', empNumber: '891', employeeId: '0891', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
     { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', empNumber: '892', employeeId: '0892', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' }
   ]}
-  const adminUsersData = [
-    { userRole: 'Admin', employeeName: 'Teste Cabral Silva', status: 'Enabled', username: 'AdminTest1', password: 'Admin@123' },
-    { userRole: 'ESS', employeeName: 'Maria Oliveira Souza', status: 'Disabled', username: 'ESSLinda1', password: 'ESS@1234' }
-  ];
 
-  for (const userData of adminUsersData) {
+  for (const userData of adminTestData.CT01DataADMIN) {
     await createCT01TestData(preConditionData);
     await adminUserPage.navigate();
     await adminUserPage.navigateAddAdminPage();
@@ -35,3 +31,25 @@ test.only(`CT01 - Create Admin Users`, async ({ page, createUserByTest: createCT
     await adminUserPage.addAdminPage.saveButton.click();
   }
 })
+
+test.only(`CT02 - Validate Search Admin Users in Admin List`, async ({ page, createUserByTest: createCT02TestData, adminTestData }) => {
+  const adminUserPage = new AdminUserPage(page);
+  const preConditionData = { data: [
+    { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', empNumber: '891', employeeId: '0891', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
+    { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', empNumber: '892', employeeId: '0892', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' }
+  ]}
+  await createCT02TestData(preConditionData);
+  for (const userData of adminTestData.CT02DataADMIN) {
+    await adminUserPage.navigate();
+    await adminUserPage.adminListPage.searchUsersByFilter(userData.username, userData.userRole, userData.employeeName, userData.status);
+    await adminUserPage.adminListPage.validateEmployeeInTable(
+      userData.username,
+      userData.userRole,
+      userData.employeeName,
+      userData.status
+    );
+  }
+
+
+})
+  
