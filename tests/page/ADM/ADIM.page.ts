@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
 import { SideBarComponent } from '../../components/sideBar.components'
 import { HeaderMenuComponent } from '../../components/headerMenu.components';
 import { MenssagerComponent } from '../../components/menssager.components';
