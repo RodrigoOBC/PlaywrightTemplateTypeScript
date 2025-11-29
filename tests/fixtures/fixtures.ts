@@ -48,11 +48,11 @@ type MyFixtures = {
 export const test = base.extend<MyFixtures>({
 
   adminTestData: {
-    CT01DataADMIN : [
+    CT01DataADMIN: [
       { userRole: 'Admin', employeeName: 'Teste Cabral Silva', status: 'Enabled', username: 'AdminTest1', password: 'Admin@123' },
       { userRole: 'ESS', employeeName: 'Maria Oliveira Souza', status: 'Disabled', username: 'ESSLinda1', password: 'ESS@1234' }
     ],
-    CT02DataADMIN : [
+    CT02DataADMIN: [
       { userRole: 'Admin', employeeName: 'Teste Cabral Silva', status: 'Enabled', username: 'AdminTest1', password: 'Admin@123' },
       { userRole: 'ESS', employeeName: 'Maria Oliveira Souza', status: 'Disabled', username: 'ESSLinda1', password: 'ESS@1234' }
     ]
@@ -155,10 +155,10 @@ export const test = base.extend<MyFixtures>({
 
       }
     }
-    use(createUserFunction)
+    await use(createUserFunction)
   },
 
-  
+
 })
 
 export const expect = test.expect;
