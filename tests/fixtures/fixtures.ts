@@ -15,6 +15,19 @@ interface Employee {
   employeeId: string;
 }
 
+interface AdminPrecondition {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  empNumber: string;
+  employeeId: string;
+  loginDetails: boolean;
+  userName: string;
+  status: string;
+  password: string;
+  confirmPassword: string;
+}
+
 interface ApiResponse {
   data: Employee[];
 }
@@ -38,6 +51,10 @@ type MyFixtures = {
     CT01DataADMIN: { userRole: string; employeeName: string; status: string; username: string; password: string }[];
     CT02DataADMIN: { userRole: string; employeeName: string; status: string; username: string; password: string }[];
   }
+  preconditionADMIN: {
+    CT01DataADMIN: { data: AdminPrecondition[]}
+    CT02DataADMIN: { data: AdminPrecondition[]}
+  }
   cleanupUsersById: (employeeIds: string) => Promise<void>;
   getUsersByTest: () => Promise<EmployeeSummary[]>;
   createUserByTest: (CTdateForTest: ApiResponse) => Promise<void>;
@@ -56,7 +73,17 @@ export const test = base.extend<MyFixtures>({
       { userRole: 'Admin', employeeName: 'Teste Cabral Silva', status: 'Enabled', username: 'AdminTest1', password: 'Admin@123' },
       { userRole: 'ESS', employeeName: 'Maria Oliveira Souza', status: 'Disabled', username: 'ESSLinda1', password: 'ESS@1234' }
     ]
+  },
 
+  preconditionADMIN: {
+    CT01DataADMIN:{ data :[
+      { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', empNumber: '891', employeeId: '0891', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
+      { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', empNumber: '892', employeeId: '0892', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' }
+    ]},
+    CT02DataADMIN:{ data: [
+    { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', empNumber: '891', employeeId: '0891', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
+    { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', empNumber: '892', employeeId: '0892', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' }
+  ]}
   },
 
   authAdmCookies: async ({ page }, use) => {
