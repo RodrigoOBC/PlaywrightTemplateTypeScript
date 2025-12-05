@@ -21,12 +21,12 @@ jobs:
     - name: Install Playwright Browsers
       run: pnpm exec playwright install --with-deps
     - name: Run Playwright tests Employer
-      run: pnpm exec playwright test PIM.spec --reporter=junit --output=playwright-report/employer
+      run: pnpm exec playwright test tests/specs/PIM.spec --reporter=junit --output=playwright-report/employer
       env:
         CI: true
       continue-on-error: true
     - name: Run Playwright tests Admin
-      run: pnpm exec playwright test Admin.spec --reporter=junit --output=playwright-report/admin
+      run: pnpm exec playwright test tests/specs/admin.spec.ts --reporter=junit --output=playwright-report/admin
       env:
         CI: true
       continue-on-error: true
