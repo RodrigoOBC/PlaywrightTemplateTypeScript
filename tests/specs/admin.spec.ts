@@ -2,15 +2,12 @@ import { AdminUserPage } from '../page/ADM/ADIM.page';
 import { test } from '../fixtures/fixtures';
 
 
-test.beforeEach(async ({ page, authAdmCookies }) => {
-  await page.context().addCookies(authAdmCookies);
-});
 
 test.afterEach(async ({ page }) => {
   await page.context().close();
 });
 
-test(`CT01 - Create Admin Users`, async ({ page, createUserByTest: createCT01TestData, adminTestData, preconditionADMIN }) => {
+test(`CT01 - Create Admin Users`, async ({ authenticatedPage: page, createUserByTest: createCT01TestData, adminTestData, preconditionADMIN }) => {
   const adminUserPage = new AdminUserPage(page);
   const preConditionData = preconditionADMIN.CT01DataADMIN;
 
@@ -29,7 +26,7 @@ test(`CT01 - Create Admin Users`, async ({ page, createUserByTest: createCT01Tes
   }
 })
 
-test(`CT02 - Validate Search Admin Users in Admin List`, async ({ page, createUserByTest: createCT02TestData, adminTestData, preconditionADMIN }) => {
+test(`CT02 - Validate Search Admin Users in Admin List`, async ({ authenticatedPage: page, createUserByTest: createCT02TestData, adminTestData, preconditionADMIN }) => {
   const adminUserPage = new AdminUserPage(page);
   const preConditionData = preconditionADMIN.CT02DataADMIN;
   await createCT02TestData(preConditionData);

@@ -1,5 +1,6 @@
 import { test as base, request, APIRequestContext } from '@playwright/test';
 import { LoginPage } from '../page/login.page'
+import { Page } from '@playwright/test';
 
 interface EmployeeSummary {
   firstName: string;
@@ -44,7 +45,6 @@ interface Cookie {
 }
 
 type MyFixtures = {
-  authAdmCookies: Cookie[];
   orangeApi: APIRequestContext;
   cleanupAndPrepareTestData: { CT02dataTest: EmployeeSummary[] };
   adminTestData: {
@@ -55,6 +55,7 @@ type MyFixtures = {
     CT01DataADMIN: { data: AdminPrecondition[]}
     CT02DataADMIN: { data: AdminPrecondition[]}
   }
+  authenticatedPage: Page;
   cleanupUsersById: (employeeIds: string) => Promise<void>;
   getUsersByTest: () => Promise<EmployeeSummary[]>;
   createUserByTest: (CTdateForTest: ApiResponse) => Promise<void>;
@@ -86,17 +87,7 @@ export const test = base.extend<MyFixtures>({
   ]}
   },
 
-  authAdmCookies: async ({ page }, use) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.navigate();
-    await loginPage.makeLogin('Admin', 'admin123');
-    await loginPage.validateLogin();
-
-    const cookies = await page.context().cookies();
-    await use(cookies)
-  },
-
-  orangeApi: async ({ page }, use) => {
+  orangeApi: async ({authenticatedPage: page }, use) => {
     const context = page.context();
     const cookies = await context.cookies();
     const sessionCookie = cookies.find(c => c.name === 'orangehrm');
@@ -116,8 +107,7 @@ export const test = base.extend<MyFixtures>({
     await apiContext.dispose();
   },
 
-  cleanupUsersById: async ({ page, authAdmCookies, orangeApi }, use) => {
-    await page.context().addCookies(authAdmCookies);
+  cleanupUsersById: async ({ orangeApi }, use) => {
 
     const cleanupFunction = async (employeeId: string) => {
       const response = await orangeApi.get(`/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&employeeId=${employeeId}&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC`);
@@ -136,8 +126,7 @@ export const test = base.extend<MyFixtures>({
     await use(cleanupFunction);
   },
 
-  getUsersByTest: async ({ page, authAdmCookies, orangeApi }, use) => {
-    await page.context().addCookies(authAdmCookies);
+  getUsersByTest: async ({ orangeApi }, use) => {
 
     const createTestDataFunction = async (): Promise<EmployeeSummary[]> => {
       const CT02dataTest: EmployeeSummary[] = [];
@@ -160,8 +149,7 @@ export const test = base.extend<MyFixtures>({
     await use(createTestDataFunction);
   },
 
-  createUserByTest: async ({ page, authAdmCookies, orangeApi }, use) => {
-    await page.context().addCookies(authAdmCookies);
+  createUserByTest: async ({ orangeApi }, use) => {
     const createUserFunction = async (CTdateForTest: ApiResponse): Promise<void> => {
       for (const userData of CTdateForTest.data) {
         const employeeName: string = `${userData.firstName} ${userData.middleName ?? ''} ${userData.lastName}`.trim();
@@ -185,6 +173,16 @@ export const test = base.extend<MyFixtures>({
     await use(createUserFunction)
   },
 
+  authenticatedPage: async ({ browser }, use) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    const loginPage = new LoginPage(page);
+    await loginPage.navigate();
+    await loginPage.makeLogin('Admin', 'admin123');
+    await loginPage.validateLogin();
+    await use(page);
+    await context.close();
+  },
 
 })
 
