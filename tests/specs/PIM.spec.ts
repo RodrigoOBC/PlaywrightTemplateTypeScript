@@ -7,20 +7,17 @@ const CT01dataTest = [
   { firstName: 'João', middleName: 'Pereira', lastName: 'Costa', employeeID: '0893', loginDetails: false, userName: '', status: '', password: '', confirmPassword: '' }
 ];
 
-// Usando as novas fixtures separadas
-test.beforeEach(async ({page,authAdmCookies }) => {
-  await page.context().addCookies(authAdmCookies);
-});
 
-test.afterEach(async ({ page }) => {
+
+test.afterEach(async ({ authenticatedPage: page }) => {
   await page.context().close();
 });
 
 
 
 for (const dataTest of CT01dataTest) {
-  test(`Create user ${dataTest['firstName']}`, async ({ page, cleanupUsersById }) => {
-     await cleanupUsersById(dataTest['employeeID']);
+  test(`Create user ${dataTest['firstName']}`, async ({ authenticatedPage: page, cleanupUsersById }) => {
+    await cleanupUsersById(dataTest['employeeID']);
     const pimPage = new PIMPage(page);
     await pimPage.navigate();
     await pimPage.navigateToAddEmployee();
@@ -30,10 +27,10 @@ for (const dataTest of CT01dataTest) {
   });
 }
 
-test(`Validate user search by name`, async ({ page, createCT02TestData }) => {
-  const ct02Data = await createCT02TestData(); 
+test(`Validate user search by name`, async ({ authenticatedPage: page, getUsersByTest }) => {
+  const ct02Data = await getUsersByTest();
   const dataTest = ct02Data[0];
-  
+
   const pimPage = new PIMPage(page);
   await pimPage.navigate();
   await pimPage.navigateToEmployeeList();

@@ -1,10 +1,11 @@
 import { test as base, request, APIRequestContext } from '@playwright/test';
 import { LoginPage } from '../page/login.page'
+import { Page } from '@playwright/test';
 
-interface EmployeeSummary { 
-  firstName: string; 
-  middleName?: string; 
-  lastName: string; 
+interface EmployeeSummary {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
 }
 
 interface Employee {
@@ -13,6 +14,19 @@ interface Employee {
   middleName?: string;
   lastName: string;
   employeeId: string;
+}
+
+interface AdminPrecondition {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  empNumber: string;
+  employeeId: string;
+  loginDetails: boolean;
+  userName: string;
+  status: string;
+  password: string;
+  confirmPassword: string;
 }
 
 interface ApiResponse {
@@ -31,28 +45,49 @@ interface Cookie {
 }
 
 type MyFixtures = {
-  authAdmCookies: Cookie[];
   orangeApi: APIRequestContext;
   cleanupAndPrepareTestData: { CT02dataTest: EmployeeSummary[] };
+  adminTestData: {
+    CT01DataADMIN: { userRole: string; employeeName: string; status: string; username: string; password: string }[];
+    CT02DataADMIN: { userRole: string; employeeName: string; status: string; username: string; password: string }[];
+  }
+  preconditionADMIN: {
+    CT01DataADMIN: { data: AdminPrecondition[]}
+    CT02DataADMIN: { data: AdminPrecondition[]}
+  }
+  authenticatedPage: Page;
   cleanupUsersById: (employeeIds: string) => Promise<void>;
-  createCT02TestData: () => Promise<EmployeeSummary[]>;
+  getUsersByTest: () => Promise<EmployeeSummary[]>;
+  createUserByTest: (CTdateForTest: ApiResponse) => Promise<void>;
 };
 
 
 
 export const test = base.extend<MyFixtures>({
 
-  authAdmCookies: async ({ page }, use) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.navigate();
-    await loginPage.makeLogin('Admin', 'admin123');
-    await loginPage.validateLogin();
-
-    const cookies = await page.context().cookies();
-    await use(cookies)
+  adminTestData: {
+    CT01DataADMIN: [
+      { userRole: 'Admin', employeeName: 'Teste Cabral Silva', status: 'Enabled', username: 'AdminTest1', password: 'Admin@123' },
+      { userRole: 'ESS', employeeName: 'Maria Oliveira Souza', status: 'Disabled', username: 'ESSLinda1', password: 'ESS@1234' }
+    ],
+    CT02DataADMIN: [
+      { userRole: 'Admin', employeeName: 'Teste Cabral Silva', status: 'Enabled', username: 'AdminTest1', password: 'Admin@123' },
+      { userRole: 'ESS', employeeName: 'Maria Oliveira Souza', status: 'Disabled', username: 'ESSLinda1', password: 'ESS@1234' }
+    ]
   },
 
-  orangeApi: async ({ page }, use) => {
+  preconditionADMIN: {
+    CT01DataADMIN:{ data :[
+      { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', empNumber: '891', employeeId: '0891', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
+      { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', empNumber: '892', employeeId: '0892', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' }
+    ]},
+    CT02DataADMIN:{ data: [
+    { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', empNumber: '891', employeeId: '0891', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
+    { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', empNumber: '892', employeeId: '0892', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' }
+  ]}
+  },
+
+  orangeApi: async ({authenticatedPage: page }, use) => {
     const context = page.context();
     const cookies = await context.cookies();
     const sessionCookie = cookies.find(c => c.name === 'orangehrm');
@@ -72,49 +107,82 @@ export const test = base.extend<MyFixtures>({
     await apiContext.dispose();
   },
 
-  cleanupUsersById: async ({ page, authAdmCookies, orangeApi }, use) => {
-    await page.context().addCookies(authAdmCookies);
-    
+  cleanupUsersById: async ({ orangeApi }, use) => {
+
     const cleanupFunction = async (employeeId: string) => {
-        const response = await orangeApi.get(`/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&employeeId=${employeeId}&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC`);
-        const existingUsers:ApiResponse = await response.json()  as ApiResponse;
-        
-        if (existingUsers.data.length > 0) {
-          await orangeApi.delete(`/web/index.php/api/v2/pim/employees`, { 
-            data: { ids: [existingUsers.data[0].empNumber] }
-          });
-        } else {
-          console.log(`No user found with employeeID: ${employeeId}`);
-        }
-      
+      const response = await orangeApi.get(`/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&employeeId=${employeeId}&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC`);
+      const existingUsers: ApiResponse = await response.json() as ApiResponse;
+
+      if (existingUsers.data.length > 0) {
+        await orangeApi.delete(`/web/index.php/api/v2/pim/employees`, {
+          data: { ids: [existingUsers.data[0].empNumber] }
+        });
+      } else {
+        console.log(`No user found with employeeID: ${employeeId}`);
+      }
+
     };
 
     await use(cleanupFunction);
   },
 
-  createCT02TestData: async ({ page, authAdmCookies, orangeApi }, use) => {
-    await page.context().addCookies(authAdmCookies);
-    
+  getUsersByTest: async ({ orangeApi }, use) => {
+
     const createTestDataFunction = async (): Promise<EmployeeSummary[]> => {
       const CT02dataTest: EmployeeSummary[] = [];
-      
+
       const responseAllUsers = await orangeApi.get('/web/index.php/api/v2/pim/employees?limit=50&offset=0&model=detailed&includeEmployees=onlyCurrent&sortField=employee.firstName&sortOrder=ASC');
-      const allUsers:ApiResponse = await responseAllUsers.json()  as ApiResponse;
-      
+      const allUsers: ApiResponse = await responseAllUsers.json() as ApiResponse;
+
       if (Array.isArray(allUsers.data) && allUsers.data.length > 0) {
         const randomUser = allUsers.data[Math.floor(Math.random() * allUsers.data.length)];
-        CT02dataTest.push({ 
-          firstName: randomUser.firstName, 
-          middleName: randomUser.middleName, 
-          lastName: randomUser.lastName 
+        CT02dataTest.push({
+          firstName: randomUser.firstName,
+          middleName: randomUser.middleName,
+          lastName: randomUser.lastName
         });
       }
-      
+
       return CT02dataTest;
     };
 
     await use(createTestDataFunction);
-  }
+  },
+
+  createUserByTest: async ({ orangeApi }, use) => {
+    const createUserFunction = async (CTdateForTest: ApiResponse): Promise<void> => {
+      for (const userData of CTdateForTest.data) {
+        const employeeName: string = `${userData.firstName} ${userData.middleName ?? ''} ${userData.lastName}`.trim();
+        const reponseUsers = await orangeApi.get(`web/index.php/api/v2/pim/employees?nameOrId=${employeeName}&includeEmployees=onlyCurrent`)
+        const usersJson: ApiResponse = await reponseUsers.json() as ApiResponse;
+        if (usersJson.data.length === 0) {
+
+          await orangeApi.post('/web/index.php/api/v2/pim/employees', {
+            data: {
+              firstName: userData.firstName,
+              middleName: userData.middleName,
+              lastName: userData.lastName,
+              employeeId: userData.employeeId
+            }
+          });
+
+        }
+
+      }
+    }
+    await use(createUserFunction)
+  },
+
+  authenticatedPage: async ({ browser }, use) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    const loginPage = new LoginPage(page);
+    await loginPage.navigate();
+    await loginPage.makeLogin('Admin', 'admin123');
+    await loginPage.validateLogin();
+    await use(page);
+    await context.close();
+  },
 
 })
 
