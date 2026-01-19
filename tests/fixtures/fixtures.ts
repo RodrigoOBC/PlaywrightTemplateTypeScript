@@ -16,6 +16,17 @@ interface Employee {
   employeeId: string;
 }
 
+interface JobTitle {
+  jobTitle: string;
+  jobDescription: string;
+  note: string;
+  pathSpecFile?: string;
+}
+
+interface JobTitleTestData {
+  CT05DataJobTitle: JobTitle[];
+}
+
 interface AdminPrecondition {
   firstName: string;
   middleName: string;
@@ -59,6 +70,7 @@ type MyFixtures = {
   cleanupUsersById: (employeeIds: string) => Promise<void>;
   getUsersByTest: () => Promise<EmployeeSummary[]>;
   createUserByTest: (CTdateForTest: ApiResponse) => Promise<void>;
+  jobTitleTestData: JobTitleTestData;
 };
 
 
@@ -85,6 +97,13 @@ export const test = base.extend<MyFixtures>({
     { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', empNumber: '891', employeeId: '0891', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
     { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', empNumber: '892', employeeId: '0892', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' }
   ]}
+  },
+
+  jobTitleTestData: {
+    CT05DataJobTitle: [
+      { jobTitle: 'Senior Developer', jobDescription: 'Responsible for developing high-quality software solutions.', note: 'Requires 5+ years of experience.' },
+      { jobTitle: 'Project Manager', jobDescription: 'Oversees project planning and execution.', note: 'PMP certification preferred.' }
+    ]
   },
 
   orangeApi: async ({authenticatedPage: page }, use) => {

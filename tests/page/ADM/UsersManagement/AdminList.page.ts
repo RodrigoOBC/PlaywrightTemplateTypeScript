@@ -1,8 +1,8 @@
 import { expect, type Page } from '@playwright/test';
-import TextBoxComponent from '../../components/textBox.components';
-import { ButtonComponent, ButtonIconComponent } from '../../components/button.components';
-import { ComboboxComponent, AutoCompleteComponent } from '../../components/combobox.components';
-import { Table } from '../../components/table.components';
+import TextBoxComponent from '../../../components/textBox.components';
+import { ButtonComponent, ButtonIconComponent } from '../../../components/button.components';
+import { ComboboxComponent, AutoCompleteComponent } from '../../../components/combobox.components';
+import { Table } from '../../../components/table.components';
 
 export class AdminListPage {
   readonly page: Page;

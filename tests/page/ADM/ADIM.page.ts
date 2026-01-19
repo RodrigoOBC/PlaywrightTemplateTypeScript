@@ -2,8 +2,10 @@ import { type Page } from '@playwright/test';
 import { SideBarComponent } from '../../components/sideBar.components'
 import { HeaderMenuComponent } from '../../components/headerMenu.components';
 import { MenssagerComponent } from '../../components/menssager.components';
-import { AddAdminPage } from './AddAdmin.page'
-import { AdminListPage } from './AdminList.page'
+import { AddAdminPage } from './UsersManagement/AddAdmin.page'
+import { AdminListPage } from './UsersManagement/AdminList.page';
+import { AddJobTitlePage } from './Jobs/AddJobTitle.page';
+
 
 
 export class AdminUserPage {
@@ -13,6 +15,7 @@ export class AdminUserPage {
     readonly menssagerComponent: MenssagerComponent
     readonly addAdminPage: AddAdminPage
     readonly adminListPage: AdminListPage
+    readonly addJobTitlePage: AddJobTitlePage
 
     constructor(page: Page) {
         this.page = page;
@@ -21,6 +24,7 @@ export class AdminUserPage {
         this.menssagerComponent = new MenssagerComponent(this.page, 'rgb(52, 188, 64)', 'Success', 'Successfully Saved');
         this.addAdminPage = new AddAdminPage(this.page);
         this.adminListPage = new AdminListPage(this.page);
+        this.addJobTitlePage = new AddJobTitlePage(this.page);
     }
 
     async navigate(): Promise<void> {
@@ -30,6 +34,17 @@ export class AdminUserPage {
 
     async navigateAddAdminPage(): Promise<void> {
         await this.headerMenuComponent.headerMenuButtons['User Management'].click();
+        await this.page.getByRole('button', { name: 'Add' }).click();
+    }
+
+    async navigateListJobsPage(): Promise<void> {
+        await this.headerMenuComponent.headerMenuButtons['Job'].click();
+        await this.page.getByRole('link', { name: 'Job Titles' }).click();
+    }
+
+    async navigateAddJobTitlePage(): Promise<void> {
+        await this.headerMenuComponent.headerMenuButtons['Job'].click();
+        await this.page.getByRole('menuitem', { name: 'Job Titles' }).click();
         await this.page.getByRole('button', { name: 'Add' }).click();
     }
 

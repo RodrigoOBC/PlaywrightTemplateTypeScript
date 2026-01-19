@@ -1,7 +1,7 @@
 import { type Page } from '@playwright/test';
-import TextBoxComponent from '../../components/textBox.components';
-import { ButtonComponent } from '../../components/button.components';
-import { ComboboxComponent, AutoCompleteComponent } from '../../components/combobox.components';
+import TextBoxComponent from '../../../components/textBox.components';
+import { ButtonComponent } from '../../../components/button.components';
+import { ComboboxComponent, AutoCompleteComponent } from '../../../components/combobox.components';
 
 
 export class AddAdminPage {
