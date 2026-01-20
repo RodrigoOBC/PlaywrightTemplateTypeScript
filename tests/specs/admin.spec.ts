@@ -1,5 +1,5 @@
 import { AdminUserPage } from '../page/ADM/ADIM.page';
-import { test } from '../fixtures/fixtures';
+import { test, expect } from '../fixtures/fixtures';
 
 
 
@@ -62,16 +62,34 @@ test.describe("Admin job management tests", () => {
     await adminUserPage.navigateAddJobTitlePage();
   });
 
-  test.only(`CT05 - Add Job Title`, async ({ authenticatedPage: page, jobTitleTestData }) => {
+  test.only(`CT05 - Add Job Title`, async ({ authenticatedPage: page, jobTitleTestData, cleanupJobsById }) => {
     const adminUserPage = new AdminUserPage(page);
-    await adminUserPage.navigate();
-    await adminUserPage.navigateAddJobTitlePage();
-    for (const jobData of jobTitleTestData.CT05DataJobTitle) {
+    const preConditionData = jobTitleTestData.CT05DataJobTitle;
+
+    for(const jobData of preConditionData) {
+      await cleanupJobsById(jobData.jobTitle);
+      await adminUserPage.navigate();
+      await adminUserPage.navigateAddJobTitlePage();
       await adminUserPage.addJobTitlePage.fillAddJobTitleForm(
         jobData.jobTitle,
         jobData.jobDescription,
-        jobData.note,
-        jobData.pathSpecFile
+        jobData.note
+      );
+      await adminUserPage.addJobTitlePage.saveButton.click();
+      await adminUserPage.addJobTitlePage.validateSuccessMessage();
+    }
+    
+  });
+
+  test.fixme(`CT06 - Add Job Title without Job Specification`, async ({ authenticatedPage: page, jobTitleTestData }) => {
+    const adminUserPage = new AdminUserPage(page);
+    await adminUserPage.navigate();
+    await adminUserPage.navigateAddJobTitlePage();
+    for (const jobData of jobTitleTestData.CT06DataJobTitle) {
+      await adminUserPage.addJobTitlePage.fillAddJobTitleForm(
+        jobData.jobTitle,
+        jobData.jobDescription,
+        jobData.note
       );
       await adminUserPage.addJobTitlePage.saveButton.click();
     }

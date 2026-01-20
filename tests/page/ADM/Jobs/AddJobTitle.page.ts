@@ -1,7 +1,8 @@
-import { type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import TextBoxComponent from '../../../components/textBox.components';
 import { ButtonComponent } from '../../../components/button.components';
 import UploadFileComponent from '../../../components/fileUpload.components';
+import { MenssagerComponent } from '../../../components/menssager.components';
 
 export class AddJobTitlePage {
     readonly page: Page;
@@ -11,6 +12,7 @@ export class AddJobTitlePage {
     readonly jobSpecUploadButton: UploadFileComponent
     readonly saveButton: ButtonComponent
     readonly cancelButton: ButtonComponent
+    readonly mensagerSuccessComponent: MenssagerComponent;
 
     constructor(page: Page) {
         this.page = page;
@@ -20,6 +22,7 @@ export class AddJobTitlePage {
         this.jobSpecUploadButton = new UploadFileComponent(this.page, { locatorObject: this.page.locator('label').filter({ hasText: 'Job Specification' }).getByRole('button') });
         this.saveButton = new ButtonComponent(this.page, 'Save');
         this.cancelButton = new ButtonComponent(this.page, 'Cancel');
+        this.mensagerSuccessComponent = new MenssagerComponent(this.page, 'rgb(52, 188, 64)', 'Success', 'Successfully Saved');
     }   
 
     async fillAddJobTitleForm(jobTitle: string, jobDescription: string, jobNote: string, jobSpecFilePath?: string): Promise<void> {
@@ -29,5 +32,12 @@ export class AddJobTitlePage {
         if (jobSpecFilePath) {
             await this.jobSpecUploadButton.uploadFile(jobSpecFilePath);
         }
+    }
+
+    async validateSuccessMessage(): Promise<void> {
+        const menssager = this.mensagerSuccessComponent;
+        await expect(await menssager.get()).toBeVisible();
+        await expect(await menssager.getTextMessage()).toMatchObject({ title: menssager.titleMessage, message: menssager.textMessage });
+        await expect(await menssager.getCollor()).toBe(menssager.color);
     }
 }

@@ -40,6 +40,24 @@ interface AdminPrecondition {
   confirmPassword: string;
 }
 
+interface JobTitleResponse {
+  id: number;
+  title: string;
+  description: string;
+  note: string;
+  jobSpecification: {
+    id: number | null;
+    fileName: string | null;
+    fileSize: number | null;
+    uploadDate: string | null;
+  }
+};
+
+
+interface JobTitleResponseApi {
+  data: JobTitleResponse[];
+}
+
 interface ApiResponse {
   data: Employee[];
 }
@@ -63,13 +81,14 @@ type MyFixtures = {
     CT02DataADMIN: { userRole: string; employeeName: string; status: string; username: string; password: string }[];
   }
   preconditionADMIN: {
-    CT01DataADMIN: { data: AdminPrecondition[]}
-    CT02DataADMIN: { data: AdminPrecondition[]}
+    CT01DataADMIN: { data: AdminPrecondition[] }
+    CT02DataADMIN: { data: AdminPrecondition[] }
   }
   authenticatedPage: Page;
   cleanupUsersById: (employeeIds: string) => Promise<void>;
   getUsersByTest: () => Promise<EmployeeSummary[]>;
   createUserByTest: (CTdateForTest: ApiResponse) => Promise<void>;
+  cleanupJobsById: (jobIds: string) => Promise<void>;
   jobTitleTestData: JobTitleTestData;
 };
 
@@ -89,14 +108,18 @@ export const test = base.extend<MyFixtures>({
   },
 
   preconditionADMIN: {
-    CT01DataADMIN:{ data :[
-      { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', empNumber: '891', employeeId: '0891', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
-      { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', empNumber: '892', employeeId: '0892', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' }
-    ]},
-    CT02DataADMIN:{ data: [
-    { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', empNumber: '891', employeeId: '0891', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
-    { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', empNumber: '892', employeeId: '0892', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' }
-  ]}
+    CT01DataADMIN: {
+      data: [
+        { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', empNumber: '891', employeeId: '0891', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
+        { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', empNumber: '892', employeeId: '0892', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' }
+      ]
+    },
+    CT02DataADMIN: {
+      data: [
+        { firstName: 'Teste', middleName: 'Cabral', lastName: 'Silva', empNumber: '891', employeeId: '0891', loginDetails: true, userName: 'TesteCabral', status: 'Enabled', password: 'Teste@1234', confirmPassword: 'Teste@1234' },
+        { firstName: 'Maria', middleName: 'Oliveira', lastName: 'Souza', empNumber: '892', employeeId: '0892', loginDetails: true, userName: 'MariaOliveira', status: 'Disabled', password: 'Maria@1234', confirmPassword: 'Maria@1234' }
+      ]
+    }
   },
 
   jobTitleTestData: {
@@ -106,7 +129,7 @@ export const test = base.extend<MyFixtures>({
     ]
   },
 
-  orangeApi: async ({authenticatedPage: page }, use) => {
+  orangeApi: async ({ authenticatedPage: page }, use) => {
     const context = page.context();
     const cookies = await context.cookies();
     const sessionCookie = cookies.find(c => c.name === 'orangehrm');
@@ -202,6 +225,27 @@ export const test = base.extend<MyFixtures>({
     await use(page);
     await context.close();
   },
+
+  cleanupJobsById: async ({ orangeApi }, use) => {
+    const cleanupFunction = async (jobName: string) => {
+      const response = await orangeApi.get(`web/index.php/api/v2/admin/job-titles?limit=50&offset=0&sortField=jt.jobTitleName&sortOrder=ASC`);
+      const existingJobs: JobTitleResponseApi = await response.json() as JobTitleResponseApi;
+      if (existingJobs.data.length > 0) {
+
+        for (let job of existingJobs.data) {
+          if (job.title === jobName) {
+            await orangeApi.delete(`/web/index.php/api/v2/admin/job-titles`, {
+              data: { ids: [job.id] }
+            });
+          }
+        }
+
+      };
+
+      
+    }
+    await use(cleanupFunction);
+  }
 
 })
 
