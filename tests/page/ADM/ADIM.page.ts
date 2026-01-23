@@ -5,6 +5,7 @@ import { MenssagerComponent } from '../../components/menssager.components';
 import { AddAdminPage } from './UsersManagement/AddAdmin.page'
 import { AdminListPage } from './UsersManagement/AdminList.page';
 import { AddJobTitlePage } from './Jobs/AddJobTitle.page';
+import { JobTitlesListPage } from './Jobs/JobTitles.page';
 
 
 
@@ -16,6 +17,7 @@ export class AdminUserPage {
     readonly addAdminPage: AddAdminPage
     readonly adminListPage: AdminListPage
     readonly addJobTitlePage: AddJobTitlePage
+    readonly jobTitlesListPage: JobTitlesListPage
 
     constructor(page: Page) {
         this.page = page;
@@ -25,6 +27,7 @@ export class AdminUserPage {
         this.addAdminPage = new AddAdminPage(this.page);
         this.adminListPage = new AdminListPage(this.page);
         this.addJobTitlePage = new AddJobTitlePage(this.page);
+        this.jobTitlesListPage = new JobTitlesListPage(this.page);
     }
 
     async navigate(): Promise<void> {

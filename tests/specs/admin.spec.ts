@@ -62,7 +62,7 @@ test.describe("Admin job management tests", () => {
     await adminUserPage.navigateAddJobTitlePage();
   });
 
-  test.only(`CT05 - Add Job Title`, async ({ authenticatedPage: page, jobTitleTestData, cleanupJobsById }) => {
+  test(`CT05 - Add Job Title`, async ({ authenticatedPage: page, jobTitleTestData, cleanupJobsById }) => {
     const adminUserPage = new AdminUserPage(page);
     const preConditionData = jobTitleTestData.CT05DataJobTitle;
 
@@ -77,6 +77,7 @@ test.describe("Admin job management tests", () => {
       );
       await adminUserPage.addJobTitlePage.saveButton.click();
       await adminUserPage.addJobTitlePage.validateSuccessMessage();
+      await adminUserPage.jobTitlesListPage.validateJobTitleInList(jobData.jobTitle);
     }
     
   });
@@ -92,6 +93,7 @@ test.describe("Admin job management tests", () => {
         jobData.note
       );
       await adminUserPage.addJobTitlePage.saveButton.click();
+      await adminUserPage.addJobTitlePage.validateSuccessMessage();
     }
   });
 })
