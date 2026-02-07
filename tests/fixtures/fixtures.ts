@@ -25,6 +25,7 @@ interface JobTitle {
 
 interface JobTitleTestData {
   CT05DataJobTitle: JobTitle[];
+  CT06DataJobTitle: JobTitle[]
 }
 
 interface AdminPrecondition {
@@ -126,6 +127,10 @@ export const test = base.extend<MyFixtures>({
     CT05DataJobTitle: [
       { jobTitle: 'Senior Developer', jobDescription: 'Responsible for developing high-quality software solutions.', note: 'Requires 5+ years of experience.' },
       { jobTitle: 'Project Manager', jobDescription: 'Oversees project planning and execution.', note: 'PMP certification preferred.' }
+    ],
+    CT06DataJobTitle: [
+      { jobTitle: 'Tech Lead QA', jobDescription: 'Responsible for create test cases.', note: 'Requires 5+ years of experience.' },
+
     ]
   },
 
@@ -242,7 +247,7 @@ export const test = base.extend<MyFixtures>({
 
       };
 
-      
+
     }
     await use(cleanupFunction);
   }

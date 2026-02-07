@@ -66,7 +66,7 @@ test.describe("Admin job management tests", () => {
     const adminUserPage = new AdminUserPage(page);
     const preConditionData = jobTitleTestData.CT05DataJobTitle;
 
-    for(const jobData of preConditionData) {
+    for (const jobData of preConditionData) {
       await cleanupJobsById(jobData.jobTitle);
       await adminUserPage.navigate();
       await adminUserPage.navigateAddJobTitlePage();
@@ -79,10 +79,10 @@ test.describe("Admin job management tests", () => {
       await adminUserPage.addJobTitlePage.validateSuccessMessage();
       await adminUserPage.jobTitlesListPage.validateJobTitleInList(jobData.jobTitle);
     }
-    
+
   });
 
-  test.fixme(`CT06 - Add Job Title without Job Specification`, async ({ authenticatedPage: page, jobTitleTestData }) => {
+  test(`CT06 - Add Job Title without Job Specification`, async ({ authenticatedPage: page, jobTitleTestData }) => {
     const adminUserPage = new AdminUserPage(page);
     await adminUserPage.navigate();
     await adminUserPage.navigateAddJobTitlePage();
