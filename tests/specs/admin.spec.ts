@@ -96,4 +96,57 @@ test.describe("Admin job management tests", () => {
       await adminUserPage.addJobTitlePage.validateSuccessMessage();
     }
   });
+
+  test(`CT07 - Delete Job Title`, async ({ authenticatedPage: page, jobTitleTestData, cleanupJobsById }) => {
+    const adminUserPage = new AdminUserPage(page);
+    
+    // Prerequisite: Create a job title to delete
+    const jobDataToDelete = jobTitleTestData.CT05DataJobTitle[0];
+    await cleanupJobsById(jobDataToDelete.jobTitle);
+    await adminUserPage.navigate();
+    await adminUserPage.navigateAddJobTitlePage();
+    await adminUserPage.addJobTitlePage.fillAddJobTitleForm(
+      jobDataToDelete.jobTitle,
+      jobDataToDelete.jobDescription,
+      jobDataToDelete.note
+    );
+    await adminUserPage.addJobTitlePage.saveButton.click();
+    await adminUserPage.addJobTitlePage.validateSuccessMessage();
+
+    // Navigate to Job Titles List
+    await adminUserPage.navigateListJobsPage();
+    await adminUserPage.jobTitlesListPage.validateJobTitleInList(jobDataToDelete.jobTitle);
+
+    // Screenshot before deletion
+    await page.screenshot({ path: `screenshots/ct07-before-deletion-${Date.now()}.png`, fullPage: true });
+
+    // Perform deletion
+    await adminUserPage.jobTitlesListPage.deleteJobTitleByName(jobDataToDelete.jobTitle);
+
+    // Screenshot after deletion
+    await page.screenshot({ path: `screenshots/ct07-after-deletion-${Date.now()}.png`, fullPage: true });
+
+    // Validate the job title is no longer in the list
+    await adminUserPage.jobTitlesListPage.validateJobTitleNotInList(jobDataToDelete.jobTitle);
+  });
+
+  test.only(`CT08 - Delete Random Job Title`, async ({ authenticatedPage: page }) => {
+    const adminUserPage = new AdminUserPage(page);
+    
+    // Navigate to Job Titles List
+    await adminUserPage.navigate();
+    await adminUserPage.navigateListJobsPage();
+
+    // Screenshot before deletion
+    await page.screenshot({ path: `screenshots/ct08-before-deletion-${Date.now()}.png`, fullPage: true });
+
+    // Delete a random job title and capture the name
+    const deletedJobTitle = await adminUserPage.jobTitlesListPage.deleteRandomJobTitle();
+
+    // Screenshot after deletion
+    await page.screenshot({ path: `screenshots/ct08-after-deletion-${Date.now()}.png`, fullPage: true });
+
+    // Validate the job title is no longer in the list
+    await adminUserPage.jobTitlesListPage.validateJobTitleNotInList(deletedJobTitle);
+  });
 })
