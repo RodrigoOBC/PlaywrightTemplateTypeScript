@@ -6,6 +6,7 @@ import { AddAdminPage } from './UsersManagement/AddAdmin.page'
 import { AdminListPage } from './UsersManagement/AdminList.page';
 import { AddJobTitlePage } from './Jobs/AddJobTitle.page';
 import { JobTitlesListPage } from './Jobs/JobTitles.page';
+import { EditJobTitlePage } from './Jobs/EditJobTitle.page';
 
 
 
@@ -18,6 +19,7 @@ export class AdminUserPage {
     readonly adminListPage: AdminListPage
     readonly addJobTitlePage: AddJobTitlePage
     readonly jobTitlesListPage: JobTitlesListPage
+    readonly editJobTitlePage: EditJobTitlePage
 
     constructor(page: Page) {
         this.page = page;
@@ -28,6 +30,7 @@ export class AdminUserPage {
         this.adminListPage = new AdminListPage(this.page);
         this.addJobTitlePage = new AddJobTitlePage(this.page);
         this.jobTitlesListPage = new JobTitlesListPage(this.page);
+        this.editJobTitlePage = new EditJobTitlePage(this.page);
     }
 
     async navigate(): Promise<void> {

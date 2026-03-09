@@ -130,7 +130,7 @@ test.describe("Admin job management tests", () => {
     await adminUserPage.jobTitlesListPage.validateJobTitleNotInList(jobDataToDelete.jobTitle);
   });
 
-  test.only(`CT08 - Delete Random Job Title`, async ({ authenticatedPage: page }) => {
+  test(`CT08 - Delete Random Job Title`, async ({ authenticatedPage: page }) => {
     const adminUserPage = new AdminUserPage(page);
     
     // Navigate to Job Titles List
@@ -148,5 +148,88 @@ test.describe("Admin job management tests", () => {
 
     // Validate the job title is no longer in the list
     await adminUserPage.jobTitlesListPage.validateJobTitleNotInList(deletedJobTitle);
+  });
+
+  test(`CT09 - Edit Job Title`, async ({ authenticatedPage: page, jobTitleTestData, cleanupJobsById }) => {
+    const adminUserPage = new AdminUserPage(page);
+    
+    // Prerequisite: Create a job title to edit
+    const jobDataToEdit = jobTitleTestData.CT05DataJobTitle[0];
+    await cleanupJobsById(jobDataToEdit.jobTitle);
+    await adminUserPage.navigate();
+    await adminUserPage.navigateAddJobTitlePage();
+    await adminUserPage.addJobTitlePage.fillAddJobTitleForm(
+      jobDataToEdit.jobTitle,
+      jobDataToEdit.jobDescription,
+      jobDataToEdit.note
+    );
+    await adminUserPage.addJobTitlePage.saveButton.click();
+    await adminUserPage.addJobTitlePage.validateSuccessMessage();
+
+    // Navigate to Job Titles List
+    await adminUserPage.navigateListJobsPage();
+    await adminUserPage.jobTitlesListPage.validateJobTitleInList(jobDataToEdit.jobTitle);
+
+    // Click edit button for the job title
+    await adminUserPage.jobTitlesListPage.editJobTitleByName(jobDataToEdit.jobTitle);
+
+    // Validate Edit Job Title Page is open
+    await adminUserPage.editJobTitlePage.validateEditJobTitlePageIsOpen();
+
+    // Get current job title value
+    const currentJobTitle = await adminUserPage.editJobTitlePage.getJobTitleValue();
+    expect(currentJobTitle).toBe(jobDataToEdit.jobTitle);
+
+    // Edit the job title
+    const newJobTitle = `${jobDataToEdit.jobTitle} - Updated`;
+    await adminUserPage.editJobTitlePage.fillEditJobTitleForm(newJobTitle);
+    await adminUserPage.editJobTitlePage.saveChanges();
+
+    // Validate success message
+    await adminUserPage.editJobTitlePage.validateSuccessMessage();
+
+    // Validate the updated job title is in the list
+    await adminUserPage.jobTitlesListPage.validateJobTitleInList(newJobTitle);
+
+    // Cleanup: Delete the updated job title
+    await cleanupJobsById(newJobTitle);
+  });
+
+  test(`CT10 - Edit Random Job Title and Verify Changes`, async ({ authenticatedPage: page }) => {
+    const adminUserPage = new AdminUserPage(page);
+    
+    // Navigate to Job Titles List
+    await adminUserPage.navigate();
+    await adminUserPage.navigateListJobsPage();
+
+    // Screenshot before editing
+    await page.screenshot({ path: `screenshots/ct10-before-edit-${Date.now()}.png`, fullPage: true });
+
+    // Edit a random job title and capture the original name
+    const originalJobTitle = await adminUserPage.jobTitlesListPage.editRandomJobTitle();
+
+    // Validate Edit Job Title Page is open
+    await adminUserPage.editJobTitlePage.validateEditJobTitlePageIsOpen();
+
+    // Get current job title value
+    const currentJobTitle = await adminUserPage.editJobTitlePage.getJobTitleValue();
+    expect(currentJobTitle).toBe(originalJobTitle);
+
+    // Edit the job title with a timestamp to ensure uniqueness
+    const updatedJobTitle = `${originalJobTitle} - Edited ${Date.now()}`;
+    await adminUserPage.editJobTitlePage.fillEditJobTitleForm(updatedJobTitle);
+    await adminUserPage.editJobTitlePage.saveChanges();
+
+    // Validate success message
+    await adminUserPage.editJobTitlePage.validateSuccessMessage();
+
+    // Screenshot after editing
+    await page.screenshot({ path: `screenshots/ct10-after-edit-${Date.now()}.png`, fullPage: true });
+
+    // Validate the updated job title is in the list
+    await adminUserPage.jobTitlesListPage.validateJobTitleInList(updatedJobTitle);
+
+    // Validate the original job title is no longer in the list
+    await adminUserPage.jobTitlesListPage.validateJobTitleNotInList(originalJobTitle);
   });
 })

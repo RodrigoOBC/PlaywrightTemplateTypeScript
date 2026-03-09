@@ -74,5 +74,42 @@ export class JobTitlesListPage {
         const jobTitlesText = await Promise.all(jobTitleColumn.map(async (locator) => await locator.innerText()));
         expect(jobTitlesText).not.toContain(jobTitle);
     }
+
+    async editJobTitleByName(jobTitle: string): Promise<void> {
+        await this.table.waitForLoad();
+        const rows = await this.table.getAllRows();
+        
+        for (const row of rows) {
+            const cells = row.getByRole('cell');
+            const cellText = await cells.nth(1).innerText();
+            
+            if (cellText.trim() === jobTitle.trim()) {
+                const editButton = row.locator('button i.bi-pencil-fill');
+                await editButton.click();
+                await this.page.waitForLoadState('networkidle');
+                return;
+            }
+        }
+    }
+
+    async editRandomJobTitle(): Promise<string> {
+        await this.table.waitForLoad();
+        const rows = await this.table.getAllRows();
+        
+        if (rows.length === 0) {
+            throw new Error('No job titles available to edit');
+        }
+        
+        const randomIndex = Math.floor(Math.random() * Math.min(rows.length, 5));
+        const selectedRow = rows[randomIndex];
+        const cells = selectedRow.getByRole('cell');
+        const jobTitleName = await cells.nth(1).innerText();
+        
+        const editButton = selectedRow.locator('button i.bi-pencil-fill');
+        await editButton.click();
+        await this.page.waitForLoadState('networkidle');
+        
+        return jobTitleName.trim();
+    }
     
 }
