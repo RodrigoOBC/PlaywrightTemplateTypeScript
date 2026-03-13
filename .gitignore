@@ -39,6 +39,18 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
+#agentsAI
+.opencode/skills/
+
+.claude/
+.github/agents/
+.github/skills/
+
+
+#playwright-cli
+.playwright-cli
+screenshots/
+
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
