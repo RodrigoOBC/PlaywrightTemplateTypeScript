@@ -36,7 +36,6 @@ export class JobTitlesListPage {
 
         await buttonsByLine['delete'].click();
         await this.confirmDeleteButton.click();
-        await this.page.waitForLoadState('networkidle');
     }
 
     async deleteRandomJobTitle(): Promise<string> {
@@ -51,7 +50,6 @@ export class JobTitlesListPage {
 
         await buttonsByLine['delete'].click();
         await this.confirmDeleteButton.click();
-        await this.page.waitForLoadState('networkidle');
         
         return ValuesByLine['Job Title'].trim();
     }
@@ -71,7 +69,7 @@ export class JobTitlesListPage {
         const buttonsByLine = await this.table.getButtonsByLines(selectedRow, ['edit']);
 
         await buttonsByLine['edit'].click();
-        await this.page.waitForLoadState('networkidle');
+        
     }
 
     async editRandomJobTitle(): Promise<string> {
@@ -85,7 +83,6 @@ export class JobTitlesListPage {
         const buttonsByLine = await this.table.getButtonsByLines(selectedRow, ['edit']);
 
         await buttonsByLine['edit'].click();
-        await this.page.waitForLoadState('networkidle');
         
         return ValuesByLine["Job Title"].trim();
     }

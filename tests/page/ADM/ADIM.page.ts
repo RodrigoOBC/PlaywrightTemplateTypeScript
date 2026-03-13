@@ -49,8 +49,7 @@ export class AdminUserPage {
     }
 
     async navigateAddJobTitlePage(): Promise<void> {
-        await this.headerMenuComponent.headerMenuButtons['Job'].click();
-        await this.page.getByRole('menuitem', { name: 'Job Titles' }).click();
+        await this.navigateListJobsPage();
         await this.page.getByRole('button', { name: 'Add' }).click();
     }
 
