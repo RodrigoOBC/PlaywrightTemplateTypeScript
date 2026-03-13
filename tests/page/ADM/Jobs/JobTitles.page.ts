@@ -31,41 +31,29 @@ export class JobTitlesListPage {
 
     async deleteJobTitleByName(jobTitle: string): Promise<void> {
         await this.table.waitForLoad();
-        const rows = await this.table.getAllRows();
-        
-        for (const row of rows) {
-            const cells = row.getByRole('cell');
-            const cellText = await cells.nth(1).innerText();
-            
-            if (cellText.trim() === jobTitle.trim()) {
-                const deleteButton = row.locator('button i.bi-trash');
-                await deleteButton.click();
-                await this.confirmDeleteButton.click();
-                await this.page.waitForLoadState('networkidle');
-                return;
-            }
-        }
+        const selectedRow = await this.table.getRowByValueName('Job Title', jobTitle);
+        const buttonsByLine = await this.table.getButtonsByLines(selectedRow, ['delete']);
+
+        await buttonsByLine['delete'].click();
+        await this.confirmDeleteButton.click();
+        await this.page.waitForLoadState('networkidle');
     }
 
     async deleteRandomJobTitle(): Promise<string> {
         await this.table.waitForLoad();
         const rows = await this.table.getAllRows();
-        
-        if (rows.length === 0) {
-            throw new Error('No job titles available to delete');
-        }
-        
+                
         const randomIndex = Math.floor(Math.random() * Math.min(rows.length, 5));
         const selectedRow = rows[randomIndex];
-        const cells = selectedRow.getByRole('cell');
-        const jobTitleName = await cells.nth(1).innerText();
-        
-        const deleteButton = selectedRow.locator('button i.bi-trash');
-        await deleteButton.click();
+
+        const ValuesByLine = await this.table.getValuesByLines(selectedRow, ["Job Title"]);
+        const buttonsByLine = await this.table.getButtonsByLines(selectedRow, ['delete']);
+
+        await buttonsByLine['delete'].click();
         await this.confirmDeleteButton.click();
         await this.page.waitForLoadState('networkidle');
         
-        return jobTitleName.trim();
+        return ValuesByLine['Job Title'].trim();
     }
 
     async validateJobTitleNotInList(jobTitle: string): Promise<void> {
@@ -77,39 +65,29 @@ export class JobTitlesListPage {
 
     async editJobTitleByName(jobTitle: string): Promise<void> {
         await this.table.waitForLoad();
-        const rows = await this.table.getAllRows();
-        
-        for (const row of rows) {
-            const cells = row.getByRole('cell');
-            const cellText = await cells.nth(1).innerText();
-            
-            if (cellText.trim() === jobTitle.trim()) {
-                const editButton = row.locator('button i.bi-pencil-fill');
-                await editButton.click();
-                await this.page.waitForLoadState('networkidle');
-                return;
-            }
-        }
+        const selectedRow = await this.table.getRowByValueName('Job Title', jobTitle);
+
+        const ValuesByLine = await this.table.getValuesByLines(selectedRow, ["Job Title"]);
+        const buttonsByLine = await this.table.getButtonsByLines(selectedRow, ['edit']);
+
+        await buttonsByLine['edit'].click();
+        await this.page.waitForLoadState('networkidle');
     }
 
     async editRandomJobTitle(): Promise<string> {
         await this.table.waitForLoad();
         const rows = await this.table.getAllRows();
-        
-        if (rows.length === 0) {
-            throw new Error('No job titles available to edit');
-        }
-        
+                
         const randomIndex = Math.floor(Math.random() * Math.min(rows.length, 5));
         const selectedRow = rows[randomIndex];
-        const cells = selectedRow.getByRole('cell');
-        const jobTitleName = await cells.nth(1).innerText();
-        
-        const editButton = selectedRow.locator('button i.bi-pencil-fill');
-        await editButton.click();
+
+        const ValuesByLine = await this.table.getValuesByLines(selectedRow, ["Job Title"]);
+        const buttonsByLine = await this.table.getButtonsByLines(selectedRow, ['edit']);
+
+        await buttonsByLine['edit'].click();
         await this.page.waitForLoadState('networkidle');
         
-        return jobTitleName.trim();
+        return ValuesByLine["Job Title"].trim();
     }
     
 }

@@ -1,19 +1,19 @@
 import { expect } from '@playwright/test';
 import { type Locator, type Page } from '@playwright/test';
-import {type ButtonIconComponent} from './button.components';
+import { ButtonIconComponent, TableButtonIconComponent } from './button.components';
 import TextBoxComponent from '../components/textBox.components';
 
 export class Table {
     readonly page
     readonly columnsName: string[]
-    readonly ButtonActions: { name: string, type: ButtonIconComponent  }[] | null
+    readonly ButtonActions: { name: string, type: ButtonIconComponent }[] | null
     readonly locators: { line: () => Promise<Locator[]>, firstLine: () => Promise<Locator> }
     readonly filterTextBox: TextBoxComponent | null
     readonly columnLocators: { [key: string]: Locator }
     readonly columnIndex: { [key: string]: number }
 
 
-    constructor(page: Page, objectsTable: { columnsName: string[], tableButtonActions?: { name: string, type: ButtonIconComponent  }[], hasTextBox?: boolean }) {
+    constructor(page: Page, objectsTable: { columnsName: string[], tableButtonActions?: { name: string, type: ButtonIconComponent }[], hasTextBox?: boolean }) {
         this.page = page;
         this.columnsName = objectsTable.columnsName || [];
         this.ButtonActions = objectsTable.tableButtonActions ? objectsTable.tableButtonActions : null;
@@ -25,13 +25,13 @@ export class Table {
                 return first;
             },
         };
-        this.filterTextBox = objectsTable.hasTextBox ? new TextBoxComponent(this.page, {pathForlocator:'role=Textbox'}) : null
+        this.filterTextBox = objectsTable.hasTextBox ? new TextBoxComponent(this.page, { pathForlocator: 'role=Textbox' }) : null
         this.columnIndex = {}
         this.columnLocators = this.initializeColumnLocators();
     }
 
     initializeColumnLocators(): { [key: string]: Locator } {
-        const columnLocators : {[key: string]: Locator } = {};
+        const columnLocators: { [key: string]: Locator } = {};
 
         for (const columnName of this.columnsName) {
             columnLocators[columnName] = this.page.getByRole('columnheader', { name: columnName })
@@ -62,7 +62,47 @@ export class Table {
         return columnIndex;
     }
 
+    async getRowByValueName(columnName: string, value: string): Promise<Locator | null> {
+        const lines = await this.getAllRows();
+        for (const line of lines) {
+            const cell = line.getByRole('cell').nth(this.columnIndex[columnName]);
+            const cellText = await cell.innerText();
+            if (cellText.trim() === value.trim()) {
+                return line;
+            }
+        }
+        return null;
+    }
 
-    
+    async getRowByColumnNameAndPositionRow(column: string, row: Locator) {
+        const rows = row.getByRole('cell').nth(this.columnIndex[column]);
+        return rows;
+    }
+
+    async getValuesByLines(line: Locator, colums: string[]): Promise<{ [key: string]: string }> {
+
+        const valuesText: { [key: string]: string } = {};
+
+        for (const column of colums) {
+            const Cell = await this.getRowByColumnNameAndPositionRow(column, line);
+            const cellText = await Cell.innerText();
+            valuesText[column] = cellText.trim();
+        }
+
+        return valuesText;
+    }
+
+    async getButtonsByLines(line: Locator, buttons: string[]): Promise<{ [key: string]: TableButtonIconComponent }> {
+        const buttonActions: { [key: string]: TableButtonIconComponent } = {}
+
+        for (const button of buttons) {
+            buttonActions[button] = new TableButtonIconComponent(this.page, button, line)
+        }
+
+        return buttonActions;
+
+    }
+
+
 }
 

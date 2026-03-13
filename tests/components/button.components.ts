@@ -64,10 +64,6 @@ export class ButtonIconComponent extends ButtonComponent {
         this.icon = {
             delete: this.page.locator('[class="oxd-icon-button oxd-table-cell-action-space"] [class="oxd-icon bi-trash"]'),
             edit: this.page.locator('[class="oxd-icon-button oxd-table-cell-action-space"] [class="oxd-icon bi-pencil-fill"]'),
-            help: this.page.getByTestId('InfoOutlinedIcon'),
-            sonarRedirect: this.page.getByTestId('sonar-redirect-icon-active'),
-            download: this.page.getByTestId("FileDownloadOutlinedIcon"),
-            redirectLink: this.page.getByTestId("ArrowOutwardIcon"),
         };
     }
 
@@ -86,4 +82,27 @@ export class ListButtonComponent extends ButtonComponent {
     }
 
     get(): Locator { return this.locator; }
+}
+
+export class TableButtonIconComponent extends ButtonComponent {
+    readonly page: Page
+    readonly iconName: string
+    readonly row: Locator
+
+    constructor(page: Page, iconName: string, row: Locator) {
+        super(page, iconName);
+        this.page = page;
+        this.iconName = iconName;
+        this.row = row;
+    }
+
+    get(): Locator {
+        const iconLocators: { [key: string]: Locator } = {
+            delete: this.row.locator('[class="oxd-icon-button oxd-table-cell-action-space"] [class="oxd-icon bi-trash"]'),
+            edit: this.row.locator('[class="oxd-icon-button oxd-table-cell-action-space"] [class="oxd-icon bi-pencil-fill"]'),
+        };
+        return iconLocators[this.iconName];
+    }
+
+
 }
