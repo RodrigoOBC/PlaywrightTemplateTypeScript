@@ -48,9 +48,13 @@ export class MenssagerComponent {
         return color;
      }
 
-     async getTextMessage(): Promise<string> { 
+     async getTextMessage(): Promise<{ title: string; message: string }> { 
         const menssagerBox: Locator = this.get();
-        const message = await menssagerBox.textContent() || '';
-        return message;
+        const titleMessage = await menssagerBox.locator('p').first().textContent()  ?? '';
+        const message = await menssagerBox.locator('p').nth(1).textContent() ?? '';
+        return {
+            title: titleMessage.trim(),
+            message: message.trim()
+        };
      }
 }
